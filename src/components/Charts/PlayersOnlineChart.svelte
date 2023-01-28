@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Chart from 'chart.js/auto/auto.js';
+	import { Chart } from 'chart.js';
 	import α from 'color-alpha';
 
-	import type { DataEntry } from '$types';
-	import { unfoldEntries } from '$types';
-	import { daily } from '$stores/ws';
+	import type { DataEntry } from '../../types';
+	import { unfoldEntries } from '../../types';
+	import { daily } from '../../stores/ws';
 
 	let maxPlayersOnlineData: { date: string; maxPlayers: number }[];
 	let chart: Chart;
@@ -22,9 +22,9 @@
 		if (chart) {
 			[chart.data.labels, chart.data.datasets[0].data] = unfoldEntries(entries);
 			if (chart.data.datasets.length != 0 && chart.data.datasets[0].data.length < 2) {
-				canvas.parentElement?.classList.add("no-data");
+				canvas.parentElement?.classList.add('no-data');
 			} else if (chart.data.datasets.length != 0) {
-				canvas.parentElement?.classList.add("initialized");
+				canvas.parentElement?.classList.add('initialized');
 			}
 			chart.update();
 		}
@@ -46,7 +46,7 @@
 			return;
 		}
 		chart = new Chart(ctx, {
-			locale: "en-US",
+			// locale: 'en-US',
 			type: 'line',
 			data: {
 				labels: [],
@@ -57,51 +57,51 @@
 						fill: true,
 						backgroundColor,
 						borderColor,
-						borderWidth
-					}
-				]
+						borderWidth,
+					},
+				],
 			},
 			options: {
-				tension: 0.2,
+				// tension: 0.2,
 				responsive: true,
 				maintainAspectRatio: false,
 				plugins: {
 					legend: {
-						display: false
-					}
+						display: false,
+					},
 				},
 				interaction: {
 					intersect: false,
-					mode: 'nearest'
+					mode: 'nearest',
 				},
 				elements: {
 					point: {
-						radius: 0
-					}
+						radius: 0,
+					},
 				},
 				animation: {
-					duration: 0
+					duration: 0,
 				},
 				scales: {
 					y: {
 						ticks: {
-							display: false
+							display: false,
 						},
 						grid: {
-							color: '#222222'
+							color: '#222222',
 						},
-						beginAtZero: true
+						beginAtZero: true,
 					},
 					x: {
 						ticks: {
-							display: false
+							display: false,
 						},
 						grid: {
-							color: '#222222'
-						}
-					}
-				}
-			}
+							color: '#222222',
+						},
+					},
+				},
+			},
 		});
 	});
 </script>

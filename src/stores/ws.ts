@@ -1,6 +1,16 @@
 import { writable, type Writable } from 'svelte/store';
-import { checkLocalDev } from '$lib/localDev';
-import { PlayerData, wsStatus, mcStatus, IMcVersion, TotalLogtime, InitReq, LogReq, uptimeReq, McVersionReq } from '$types';
+
+import { checkLocalDev } from '../lib/localDev';
+import type {
+	PlayerData,
+	IMcVersion,
+	TotalLogtime,
+	InitReq,
+	LogReq,
+	uptimeReq,
+	McVersionReq,
+} from '../types';
+import { wsStatus, mcStatus } from '../types';
 
 export const players: Writable<PlayerData[]> = writable([]);
 export const uptime: Writable<{ up: number; down: number }[]> = writable([]);
@@ -32,13 +42,11 @@ export const totalLogtime: Writable<TotalLogtime[]> = writable([]);
 
 let lPlayers: PlayerData[] = [];
 
-function onLogIn(player: string)
-{
+function onLogIn(player: string) {
 	console.log(player + ' logged in');
 }
 
-function onLogOut(player: string)
-{
+function onLogOut(player: string) {
 	console.log(player + ' logged out');
 }
 
@@ -60,10 +68,13 @@ export const connect = () => {
 	clearInterval(interval);
 	wsConnectonStatus.set(wsStatus.Connecting);
 	refreshCountdown.set(intervalSeconds);
-	const address = checkLocalDev(import.meta.env.VITE_WEBSOCKET_ADDRESS, "wss://" + window.location.hostname + "/ws");
+	const address = checkLocalDev(
+		import.meta.env.VITE_WEBSOCKET_ADDRESS,
+		'wss://' + window.location.hostname + '/ws',
+	);
 	if (!address) {
 		console.error(
-			`Environment variable 'VITE_WEBSOCKET_ADDRESS' is ${address}. Is your project set-up correctly ?`
+			`Environment variable 'VITE_WEBSOCKET_ADDRESS' is ${address}. Is your project set-up correctly ?`,
 		);
 	}
 	const ws = new WebSocket(address);
@@ -80,7 +91,7 @@ export const connect = () => {
 	ws.addEventListener('open', () => {
 		wsConnectonStatus.set(wsStatus.Connected);
 		ping_interval = setInterval(() => {
-			ws.send("ping");
+			ws.send('ping');
 		}, 50000);
 	});
 
@@ -109,18 +120,16 @@ export const connect = () => {
 				}
 			} else if (data.action == 'disconnect') {
 				for (const player of data.affected) {
-					players.update((p) =>
-						p.filter(obj => obj.username !== player)
-					);
+					players.update((p) => p.filter((obj) => obj.username !== player));
 				}
 			}
-		} else if (data.type == "uptime") {
+		} else if (data.type == 'uptime') {
 			if (data.state) {
 				mcConnectionStatus.set(mcStatus.Connected);
 			} else {
 				mcConnectionStatus.set(mcStatus.NotConnected);
 			}
-		} else if (data.type == "version") {
+		} else if (data.type == 'version') {
 			mcVersion.set({
 				java: data.java,
 				bedrock: data.bedrock,

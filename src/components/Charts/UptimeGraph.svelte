@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Chart from 'chart.js/auto/auto.js';
+	import { Chart } from 'chart.js';
 	import α from 'color-alpha';
 
-	import { uptime } from '$stores/ws';
-	import getTIme from '$lib/time';
+	import { uptime } from '../../stores/ws';
+	import getTIme from '../../lib/time';
 
 	let uptimeData: { up: number; down: number }[];
 	let chart: Chart;
@@ -17,16 +17,16 @@
 		const data = uptimeData.map((v) => [
 			{
 				x: v.up,
-				y: 0
+				y: 0,
 			},
 			{
 				x: v.down,
-				y: v.down - v.up
+				y: v.down - v.up,
 			},
 			{
 				x: v.down,
-				y: 0
-			}
+				y: 0,
+			},
 		]);
 		let set: { x: number; y: number }[] = [];
 
@@ -44,14 +44,16 @@
 		}
 
 		if (chart) {
-			chart.data.datasets = [{
-				data: [...set],
-				showLine: true
-			}];
+			chart.data.datasets = [
+				{
+					data: [...set],
+					showLine: true,
+				},
+			];
 			if (chart.data.datasets.length != 0 && chart.data.datasets[0].data[0] !== undefined) {
-				canvas.parentElement?.classList.add("initialized");
+				canvas.parentElement?.classList.add('initialized');
 			} else {
-				canvas.parentElement?.classList.add("no-data");
+				canvas.parentElement?.classList.add('no-data');
 			}
 			// console.log(uptimeData, chart.data.datasets[0]);
 			chart.update();
@@ -72,64 +74,64 @@
 			return;
 		}
 		chart = new Chart(ctx, {
-			locale: "en-US",
+			// locale: 'en-US',
 			type: 'scatter',
-			data: {},
+			data: { datasets: [] },
 			options: {
-				tension: 0,
+				// tension: 0,
 				responsive: true,
 				maintainAspectRatio: false,
 				plugins: {
 					legend: {
-						display: false
+						display: false,
 					},
 					tooltip: {
 						callbacks: {
-							label: function(context) {
+							label: function (context: any) {
 								return new getTIme(context.raw.y).logtime();
-							}
-						}
+							},
+						},
 					},
 				},
 				interaction: {
 					intersect: false,
-					mode: 'nearest'
+					mode: 'nearest',
 				},
 				elements: {
 					point: {
 						radius: 0,
-						backgroundColor: 'cyan'
+						backgroundColor: 'cyan',
 					},
 					line: {
 						backgroundColor: α('cyan', 0.1),
 						borderColor: 'cyan',
 						borderWidth: 1,
-						fill: true
-					}
+						fill: true,
+					},
 				},
 				animation: {
-					duration: 0
+					duration: 0,
 				},
 				scales: {
 					y: {
 						ticks: {
-							display: false
+							display: false,
 						},
 						grid: {
-							color: '#222222'
+							color: '#222222',
 						},
-						beginAtZero: true
+						beginAtZero: true,
 					},
 					x: {
 						ticks: {
-							display: false
+							display: false,
 						},
 						grid: {
-							color: '#222222'
-						}
-					}
-				}
-			}
+							color: '#222222',
+						},
+					},
+				},
+			},
 		});
 	});
 </script>

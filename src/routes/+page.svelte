@@ -5,16 +5,16 @@
 		mcConnectionStatus,
 		mcVersion,
 		refreshCountdown
-	} from '$stores/ws';
-	import { wsStatus, mcStatus, IMcVersion } from '$types';
-	import PlayerData from '$components/Player/PlayerData.svelte';
-	import { server_name } from '$stores/server_properties';
+	} from '../stores/ws';
+	import { wsStatus, mcStatus, type IMcVersion } from '../types';
+	import PlayerData from '../components/Player/PlayerData.svelte';
+	import { server_name } from '../stores/server_properties';
 
 	let ws_status: wsStatus;
 	let countdown: number;
 
 	let mc_status: mcStatus;
-	let mc_version: IMcVersion = null;
+	let mc_version: IMcVersion | null = null;
 
 	wsConnectonStatus.subscribe((value) => {
 		ws_status = value;
@@ -28,9 +28,13 @@
 		mc_status = value;
 	});
 
-	mcVersion.subscribe((value: IMcVersion) => {
+	mcVersion.subscribe((value: IMcVersion | null) => {
 		mc_version = value;
 	});
+
+	function keydown(e: KeyboardEvent) {
+		if (e.key == 'Enter') connect();
+	}
 </script>
 
 <svelte:head>
@@ -63,7 +67,7 @@
 	{:else if ws_status == wsStatus.NotConnected}
 		<div class="server-closed status">Unable to get data from server.</div>
 		<div class="status">Retrying in {countdown}s</div>
-		<div class="refreshButton" on:click={connect}>Refresh</div>
+		<div class="refreshButton" on:click={connect} on:keydown={keydown}>Refresh</div>
 	{/if}
 	{#if mc_status == mcStatus.NotConnected}
 		<div class="server-closed status">Server is closed.</div>

@@ -2,7 +2,7 @@
 	"name": "mcstats-frontend",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "vite dev --port 5000",
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -15,6 +15,7 @@
 		"@neoconfetti/svelte": "^1.0.0",
 		"@sveltejs/adapter-auto": "^1.0.0",
 		"@sveltejs/kit": "^1.0.0",
+		"@tsconfig/svelte": "^3.0.0",
 		"@types/chart.js": "^2.9.37",
 		"@types/cookie": "^0.5.1",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
@@ -27,8 +28,7 @@
 		"svelte": "^3.54.0",
 		"svelte-check": "^3.0.1",
 		"tslib": "^2.4.1",
-		"typescript": "^4.9.3",
-		"vite": "^4.0.0"
+		"typescript": "^4.9.3"
 	},
 	"type": "module",
 	"dependencies": {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fetchPlayerSkin } from '$stores/head';
+	import { fetchPlayerSkin } from '../../stores/head';
 
 	let container: HTMLDivElement;
 
@@ -12,18 +12,15 @@
 	{#await playerPromise}
 		<div
 			class="player-head-img"
-			style="background: url('/heads/Loading.png'); background-size: 100%; image-rendering: pixelated;"
-		/>
+			style="background: url('/heads/Loading.png'); background-size: 100%; image-rendering: pixelated;" />
 	{:then skin}
 		<div
 			class="player-head-img finished"
-			style="background: url('{skin}'); background-size: 100%; image-rendering: pixelated;"
-		/>
+			style="background: url('{skin}'); background-size: 100%; image-rendering: pixelated;" />
 	{:catch}
 		<div
 			class="player-head-img"
-			style="background: url('/heads/Steve.png'); color: white; background-size: 100%; image-rendering: pixelated;"
-		/>
+			style="background: url('/heads/Steve.png'); color: white; background-size: 100%; image-rendering: pixelated;" />
 	{/await}
 	<div class="player-name">{name}</div>
 </div>

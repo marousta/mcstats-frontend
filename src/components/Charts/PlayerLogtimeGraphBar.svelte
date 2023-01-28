@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Chart from 'chart.js/auto/auto.js';
-	import type { DataEntry } from '$types';
-	import { unfoldEntries } from '$types';
-	import { totalLogtime, type TotalLogtime } from '$stores/ws';
-	import getTime from '$lib/time';
+	import { Chart } from 'chart.js';
+	import type { DataEntry } from '../../types';
+	import { unfoldEntries } from '../../types';
+	import { totalLogtime } from '../../stores/ws';
+	import type { TotalLogtime } from '../../types';
+	import getTime from '../../lib/time';
 
 	let players: TotalLogtime[] = [];
 	totalLogtime.subscribe((value) => (players = value));
@@ -19,22 +20,24 @@
 			let datasets = [];
 			let labels: string[] = [];
 			if (players.length > 0) {
-				labels = players.map(p => p.username);
+				labels = players.map((p) => p.username);
 			}
 			const colors = players.map(() => {
-				return `rgb(${Math.floor(Math.random() * 200 + 54).toString()},${Math.floor(Math.random() * 200 + 54).toString()},${Math.floor(Math.random() * 200 + 54).toString()})`;
-			})
+				return `rgb(${Math.floor(Math.random() * 200 + 54).toString()},${Math.floor(
+					Math.random() * 200 + 54,
+				).toString()},${Math.floor(Math.random() * 200 + 54).toString()})`;
+			});
 			datasets.push({
-				label: "Total logtime",
-				data: [...players.map(p => p.todayLogtime)],
+				label: 'Total logtime',
+				data: [...players.map((p) => p.todayLogtime)],
 				backgroundColor: colors,
 			});
 			chart.data.labels = [...labels, 'Today'];
 			chart.data.datasets = datasets;
 			if (chart.data.datasets.length != 0 && chart.data.datasets[0].data[0] !== undefined) {
-				canvas.parentElement?.classList.add("initialized");
+				canvas.parentElement?.classList.add('initialized');
 			} else {
-				canvas.parentElement?.classList.add("no-data");
+				canvas.parentElement?.classList.add('no-data');
 			}
 			chart.update();
 		}
@@ -51,14 +54,14 @@
 			return;
 		}
 		chart = new Chart(ctx, {
-			locale: "en-US",
+			// locale: 'en-US',
 			type: 'bar',
 			data: {
 				labels,
-				datasets: []
+				datasets: [],
 			},
 			options: {
-				tension: 0,
+				// tension: 0,
 				responsive: true,
 				maintainAspectRatio: false,
 				plugins: {
@@ -67,10 +70,10 @@
 					},
 					tooltip: {
 						callbacks: {
-							label: function(context) {
+							label: function (context: any) {
 								return new getTime(parseInt(context.raw)).logtime();
-							}
-						}
+							},
+						},
 					},
 				},
 				interaction: {
@@ -80,23 +83,23 @@
 				scales: {
 					y: {
 						ticks: {
-							display: false
+							display: false,
 						},
 						grid: {
-							color: '#222222'
+							color: '#222222',
 						},
-						beginAtZero: true
+						beginAtZero: true,
 					},
 					x: {
 						ticks: {
-							display: false
+							display: false,
 						},
 						grid: {
-							color: '#222222'
+							color: '#222222',
 						},
 					},
-				}
-			}
+				},
+			},
 		});
 	});
 </script>

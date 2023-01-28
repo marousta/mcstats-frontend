@@ -4,7 +4,7 @@ export enum ModalType {
 	Helper,
 	Success,
 	Warning,
-	Error
+	Error,
 }
 
 export type ModalData = {

@@ -1,4 +1,4 @@
-import getTime from "$lib/time";
+import getTime from './lib/time';
 
 export type DataEntry = {
 	data: number;
@@ -17,7 +17,7 @@ export function unfoldEntries(entries: DataEntry[]): [string[], number[]] {
 
 export type InitReq = {
 	type: 'init';
-	version: IMcVersion,
+	version: IMcVersion;
 	uptime: {
 		sessions: Array<{ up: number; down: number }>;
 	};
@@ -40,10 +40,10 @@ export type uptimeReq = {
 export interface IMcVersion {
 	java: string | null;
 	bedrock: string | null;
-};
+}
 
 export type McVersionReq = {
-	type: "version";
+	type: 'version';
 	java: string | null;
 	bedrock: string | null;
 };

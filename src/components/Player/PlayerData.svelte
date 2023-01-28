@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { players, type PlayerData } from '$stores/ws';
-	import PlayerHead from '$components/Player/PlayerHead.svelte';
+	import { players } from '../../stores/ws';
+	import type { PlayerData } from '../../types';
+
+	import PlayerHead from '../Player/PlayerHead.svelte';
 
 	export let maxPlayers: string;
 

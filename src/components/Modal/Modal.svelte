@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { modals, ModalType, type ModalData } from '$stores/modal';
+	import { modals, ModalType, type ModalData } from '../../stores/modal';
 
 	export let data: ModalData;
 	// export let type: string;
@@ -37,46 +37,18 @@
 	setTimeout(() => {
 		remove();
 	}, 3500);
+
+	function keydown(e: KeyboardEvent) {
+		if (e.key == 'Enter') remove();
+	}
 </script>
 
 {#if canRender}
-	<div class="modal {color} {timeout}" on:click={remove}>
+	<div class="modal {color} {timeout}" on:click={remove} on:keydown={keydown}>
 		<div class="text">{data.id}</div>
 	</div>
 {/if}
 
-<!-- let div = document.createElement("div")
-div.classList.add("modal")
-div.classList.add(type)
-div.setAttribute("data-id", id)
-
-let textDiv = document.createElement("div")
-textDiv.classList.add("text")
-textDiv.innerText = text
-
-let codeDiv = document.createElement("div")
-codeDiv.classList.add("code")
-codeDiv.innerText = code ? code : ""
-
-div.appendChild(textDiv)
-div.appendChild(codeDiv)
-
-this.array.push(div)
-div.addEventListener("click", () => {
-	div.classList.add("timeout")
-	setTimeout(() => {
-		this.remove(div, id)
-	}, 500)
-})
-setTimeout(() => {
-	div.classList.add("timeout")
-}, 3450)
-setTimeout(() => {
-	this.remove(div, id)
-}, 4000)
-
-modalContainer.appendChild(div)
-modalContainer.scrollTo(0, 10000) -->
 <style lang="scss">
 	$infos_width: 200px;
 

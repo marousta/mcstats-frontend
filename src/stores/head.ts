@@ -1,4 +1,4 @@
-export const fetchPlayer = async (name: string): Promise<JSON> => {
+export const fetchPlayer = async (name: string): Promise<any> => {
 	if (import.meta.env.VITE_FETCH_PLAYER_HEADS == 0) {
 		throw 'Player heads are deactivated (VITE_FETCH_PLAYER_HEADS == 0)';
 	}
@@ -17,4 +17,5 @@ export const fetchPlayerSkin = async (name: string): Promise<string> => {
 	if (player) {
 		return player.data.player.avatar;
 	}
+	return '';
 };

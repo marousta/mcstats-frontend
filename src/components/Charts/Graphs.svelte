@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { daily, uptime } from '$stores/ws.ts';
-	import type { DataEntry } from '$types';
-	import PlayersOnlineChart from '$components/Charts/PlayersOnlineChart.svelte';
-	import PlayersLogtimeGraphBar from '$components/Charts/PlayerLogtimeGraphBar.svelte';
-	import PlayersLogtimeGraph from '$components/Charts/PlayerLogtimeGraph.svelte';
-	import UptimeGraph from '$components/Charts/UptimeGraph.svelte';
+	import { daily, uptime } from '../../stores/ws';
+	import type { DataEntry } from '../../types';
+	import PlayersOnlineChart from '../Charts/PlayersOnlineChart.svelte';
+	import PlayersLogtimeGraphBar from '../Charts/PlayerLogtimeGraphBar.svelte';
+	import PlayersLogtimeGraph from '../Charts/PlayerLogtimeGraph.svelte';
+	import UptimeGraph from '../Charts/UptimeGraph.svelte';
 
 	let uptimeData: { up: number; down: number }[];
 	let uptimeEntries: DataEntry[];
