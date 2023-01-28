@@ -5,10 +5,10 @@
 		mcConnectionStatus,
 		mcVersion,
 		refreshCountdown
-	} from '../stores/ws';
-	import { wsStatus, mcStatus, type IMcVersion } from '../types';
-	import PlayerData from '../components/Player/PlayerData.svelte';
-	import { server_name } from '../stores/server_properties';
+	} from '../../stores/ws';
+	import { wsStatus, mcStatus, type IMcVersion } from '../../types';
+	import PlayerData from '../../components/Player/PlayerData.svelte';
+	import { server_name } from '../../stores/server_properties';
 
 	let ws_status: wsStatus;
 	let countdown: number;

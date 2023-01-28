@@ -1,5 +1,5 @@
-<script>
-	import { server_name } from '../../stores/server_properties';
+<script lang="ts">
+	import { server_name } from '../../../stores/server_properties';
 </script>
 
 <svelte:head>
@@ -8,22 +8,19 @@
 
 <div class="about">
 	<p>
-		Website made by <a href="https://jorun.dev" target="_blank" rel="noreferrer">jorun</a> using
-		<a href="https://kit.svelte.dev/" target="_blank" rel="noreferrer">SvelteKit</a>
-		running on <b>NodeJS</b>
-	</p>
-	<p>
 		Charts made using <a
 			href="https://www.chartjs.org/"
 			target="_blank"
 			rel="noreferrer"
-			title="It sucks">Chart.js</a>
+			title="It sucks">Chart.js</a
+		>
 	</p>
 	<p>
 		Dynamic Minecraft map made using <a
 			href="https://github.com/webbukkit/dynmap"
 			rel="noreferrer"
-			target="_blank">Dynmap</a>
+			target="_blank">Dynmap</a
+		>
 		&nbsp;|&nbsp; Frontend by
 		<a href="https://github.com/JLyne/LiveAtlas" target="_blank" rel="noreferrer">LiveAtlas</a>
 	</p>
@@ -31,19 +28,15 @@
 		3D Minecraft map made using <a
 			href="https://github.com/BlueMap-Minecraft/BlueMap"
 			rel="noreferrer"
-			target="_blank">BlueMap</a>
+			target="_blank">BlueMap</a
+		>
 	</p>
 	<p>
 		Java/Bedrock compatibility provided by <a
 			href="https://geysermc.org/"
 			target="_blank"
-			rel="noreferrer">GeyserMC</a>
-	</p>
-	<p>
-		Minecraft Server and Data provider by <a
-			href="https://shalyu.run/"
-			target="_blank"
-			rel="noreferrer">Nellen</a>
+			rel="noreferrer">GeyserMC</a
+		>
 	</p>
 </div>
 

@@ -24,14 +24,13 @@
 		}
 	}
 
-
 	@media screen and (max-width: 570px) {
 		footer {
 			font-size: 12px;
 
 			div:not(:last-child):after {
 				padding: 0px 8px;
-				content: "|";
+				content: '|';
 			}
 		}
 	}
