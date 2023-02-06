@@ -1,4 +1,4 @@
-import getTime from './lib/time';
+import { getTime } from './lib/time';
 
 export type DataEntry = {
 	data: number;
@@ -15,57 +15,22 @@ export function unfoldEntries(entries: DataEntry[]): [string[], number[]] {
 	return [labels, data];
 }
 
-export type InitReq = {
-	type: 'init';
-	version: IMcVersion;
-	uptime: {
-		sessions: Array<{ up: number; down: number }>;
-	};
-	players: TotalLogtime[];
-	daily: Array<{ date: string; maxPlayers: number }>;
-};
-
-export type LogReq = {
-	type: 'log';
-	action: string;
-	affected: string[];
-};
-
-export type uptimeReq = {
-	type: 'uptime';
-	state: boolean;
-	timestamp: number;
-};
-
-export interface IMcVersion {
-	java: string | null;
-	bedrock: string | null;
-}
-
-export type McVersionReq = {
-	type: 'version';
-	java: string | null;
-	bedrock: string | null;
-};
-
 export enum wsStatus {
-	Connected,
-	NotConnected,
-	Connecting,
+	Connected = 0,
+	NotConnected = 1,
+	Connecting = 2,
 }
 
 export enum mcStatus {
-	Connected,
-	NotConnected,
+	NotConnected = 0,
+	Connected = 1,
 }
 
 export type PlayerData = {
 	username: string;
-	id: number;
+	id: number; //TODO: UUID
 };
 
-export type TotalLogtime = {
-	username: string;
-	data: Array<{ date: string; logtime: number }>;
-	todayLogtime: number;
-};
+/**
+ * Reworked
+ */

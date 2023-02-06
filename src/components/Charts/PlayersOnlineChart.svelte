@@ -1,26 +1,95 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Chart } from 'chart.js';
+	import { Chart, registerables, type ChartOptions } from 'chart.js';
 	import α from 'color-alpha';
 
-	import type { DataEntry } from '../../types';
-	import { unfoldEntries } from '../../types';
-	import { daily } from '../../stores/ws';
+	import { playersMaxOnline, serverKind } from '../../stores/stores';
+	import type { ResponseHistoryPlayersMaxOnline } from '../../stores/types';
+	import { getTime } from '$lib/time';
+	import type { ServerKind } from '../../stores/websocket/types';
+	import { get } from 'svelte/store';
 
-	let maxPlayersOnlineData: { date: string; maxPlayers: number }[];
+	export let label: string;
+	let backgroundColor: string = 'white';
+
+	let canvas: HTMLCanvasElement;
+
 	let chart: Chart;
+	const options: ChartOptions = {
+		locale: 'en-US',
+		responsive: true,
+		maintainAspectRatio: false,
+		line: {
+			datasets: {
+				tension: 0,
+			},
+		},
+		plugins: {
+			legend: {
+				display: false,
+			},
+		},
+		interaction: {
+			intersect: false,
+			mode: 'nearest',
+		},
+		elements: {
+			point: {
+				radius: 0,
+			},
+		},
+		animation: {
+			duration: 0,
+		},
+		scales: {
+			y: {
+				ticks: {
+					display: false,
+				},
+				grid: {
+					color: '#222222',
+				},
+				beginAtZero: true,
+			},
+			x: {
+				ticks: {
+					display: false,
+				},
+				grid: {
+					color: '#222222',
+				},
+			},
+		},
+	};
 
-	daily.subscribe((value) => (maxPlayersOnlineData = value));
+	// Store
+	const kind: ServerKind = get(serverKind);
+	let history: ResponseHistoryPlayersMaxOnline[];
+	playersMaxOnline.subscribe((value) => {
+		if (!value[kind]) {
+			console.log('Hm 3');
+			return;
+		}
+		history = value[kind]!;
+	});
 
-	let entries: DataEntry[] = [];
-	let label = 'Max Players Online';
+	//
+	function unfoldEntries(entries: ResponseHistoryPlayersMaxOnline[]): [string[], number[]] {
+		const labels: string[] = [];
+		const data: number[] = [];
+
+		entries.forEach((entry) => {
+			data.push(entry.value);
+			labels.push(new getTime(entry.date).full());
+		});
+
+		return [labels, data];
+	}
 
 	$: {
-		entries = maxPlayersOnlineData.map((obj) => {
-			return { data: obj.maxPlayers, label: obj.date };
-		});
-		if (chart) {
-			[chart.data.labels, chart.data.datasets[0].data] = unfoldEntries(entries);
+		if (history && chart) {
+			[chart.data.labels, chart.data.datasets[0].data] = unfoldEntries(history);
+
 			if (chart.data.datasets.length != 0 && chart.data.datasets[0].data.length < 2) {
 				canvas.parentElement?.classList.add('no-data');
 			} else if (chart.data.datasets.length != 0) {
@@ -30,14 +99,6 @@
 		}
 	}
 
-	export let backgroundColor = 'blue';
-	export let borderColor = backgroundColor;
-	export let borderWidth = 1;
-
-	let backgroundColorFinal: string;
-
-	let canvas: HTMLCanvasElement;
-
 	onMount(() => {
 		backgroundColor = α(backgroundColor, 0.1);
 		const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
@@ -45,8 +106,11 @@
 			console.error('Could not create Canvas Context');
 			return;
 		}
+
+		history = get(playersMaxOnline)[get(serverKind)] ?? [];
+
+		Chart.register(...registerables);
 		chart = new Chart(ctx, {
-			// locale: 'en-US',
 			type: 'line',
 			data: {
 				labels: [],
@@ -56,52 +120,12 @@
 						data: [],
 						fill: true,
 						backgroundColor,
-						borderColor,
-						borderWidth,
+						borderColor: backgroundColor,
+						borderWidth: 1,
 					},
 				],
 			},
-			options: {
-				// tension: 0.2,
-				responsive: true,
-				maintainAspectRatio: false,
-				plugins: {
-					legend: {
-						display: false,
-					},
-				},
-				interaction: {
-					intersect: false,
-					mode: 'nearest',
-				},
-				elements: {
-					point: {
-						radius: 0,
-					},
-				},
-				animation: {
-					duration: 0,
-				},
-				scales: {
-					y: {
-						ticks: {
-							display: false,
-						},
-						grid: {
-							color: '#222222',
-						},
-						beginAtZero: true,
-					},
-					x: {
-						ticks: {
-							display: false,
-						},
-						grid: {
-							color: '#222222',
-						},
-					},
-				},
-			},
+			options,
 		});
 	});
 </script>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+
 	import { modals, ModalType, type ModalData } from '../../stores/modal';
 
 	export let data: ModalData;

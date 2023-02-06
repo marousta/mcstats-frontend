@@ -1,59 +1,128 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Chart } from 'chart.js';
-	import type { DataEntry } from '../../types';
-	import { unfoldEntries, type TotalLogtime } from '../../types';
-	import { totalLogtime } from '../../stores/ws';
-	import getTime from '../../lib/time';
+	import { Chart, registerables, type ChartOptions } from 'chart.js';
 
-	let players: TotalLogtime[] = [];
-	totalLogtime.subscribe((value) => (players = value));
+	import { playersLogtimes, serverKind } from '../../stores/stores';
+	import { getTime } from '../../lib/time';
+	import type { ResponseHistoryPlayersLogtimes } from '../../stores/types';
+	import { get } from 'svelte/store';
+	import type { ServerKind } from '../../stores/websocket/types';
 
-	export let entries: DataEntry[];
 	export let label: string;
 
-	export let borderWidth = 1;
-	let chart: Chart;
+	let canvas: HTMLCanvasElement;
 
-	function getMaxElements(players: TotalLogtime[]): number {
+	let chart: Chart;
+	const options: ChartOptions = {
+		locale: 'en-US',
+		responsive: true,
+		maintainAspectRatio: false,
+		line: {
+			datasets: {
+				tension: 0,
+			},
+		},
+		plugins: {
+			legend: {
+				display: false,
+			},
+			tooltip: {
+				callbacks: {
+					label: function (context: any) {
+						return (
+							context.dataset.label +
+							': ' +
+							new getTime(parseInt(context.raw)).logtime()
+						);
+					},
+				},
+			},
+		},
+		interaction: {
+			intersect: false,
+			mode: 'nearest',
+		},
+		elements: {
+			point: {
+				radius: 0,
+			},
+		},
+		scales: {
+			y: {
+				ticks: {
+					display: false,
+				},
+				grid: {
+					color: '#222222',
+				},
+				beginAtZero: true,
+			},
+			x: {
+				ticks: {
+					display: false,
+				},
+				grid: {
+					color: '#222222',
+				},
+			},
+		},
+	};
+
+	// Store
+	const kind: ServerKind = get(serverKind);
+	let history: ResponseHistoryPlayersLogtimes[];
+	playersLogtimes.subscribe((value) => {
+		if (!value[kind]) {
+			console.log('Hm 1');
+			return;
+		}
+		history = value[kind]!;
+	});
+
+	// count max elements in data
+	function getMaxElements(players: ResponseHistoryPlayersLogtimes[]): number {
 		let maxElements: number = 0;
-		for (const player of players) {
+		players.forEach((player) => {
 			let elementsCount: number = 0;
-			for (const data of player.data) {
+			player.data.forEach(() => {
 				elementsCount++;
-			}
+			});
+
 			if (maxElements < elementsCount) {
 				maxElements = elementsCount;
 			}
-		}
+		});
+
 		return maxElements;
 	}
 
-	function mapData(player: TotalLogtime, max: number): Array<number> {
-		const logtimeHistory: Array<number> = player.data.map((n) => n.logtime);
+	// fill empty data with zeros
+	function fillData(player: ResponseHistoryPlayersLogtimes, max: number): Array<number> {
+		const logtimeHistory: Array<number> = player.data.map((n) => n.value);
 		if (logtimeHistory.length == max) {
 			return logtimeHistory;
 		}
+
 		let ret: Array<number> = [];
 		for (let i = 0; i < max - logtimeHistory.length; i++) {
 			ret.push(0);
 		}
-		ret = [...ret, ...logtimeHistory];
-		return ret;
+
+		return [...ret, ...logtimeHistory];
 	}
 
 	$: {
-		if (players && chart) {
+		if (history && chart) {
 			let datasets = [];
 			let labels: string[] = [];
-			if (players.length > 0) {
-				labels = players[0].data.map((n) => n.date);
+			if (history.length > 0) {
+				labels = history[0].data.map((n) => new getTime(n.date).full());
 			}
-			let maxElements: number = getMaxElements(players);
-			for (const player of players) {
+			let maxElements: number = getMaxElements(history);
+			for (const player of history) {
 				datasets.push({
 					label: player.username,
-					data: [...mapData(player, maxElements), player.todayLogtime],
+					data: [...fillData(player, maxElements), player.current],
 					backgroundColor: 'transparent',
 					borderColor:
 						'rgb(' +
@@ -63,7 +132,7 @@
 						',' +
 						Math.floor(Math.random() * 200 + 54).toString() +
 						')',
-					borderWidth,
+					borderWidth: 1,
 				});
 			}
 			chart.data.labels = [...labels, 'Today'];
@@ -77,72 +146,22 @@
 		}
 	}
 
-	let canvas: HTMLCanvasElement;
-
-	let [labels, data] = unfoldEntries(entries);
-
-	onMount(() => {
+	onMount(async () => {
 		const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
 		if (!ctx) {
-			console.error('Could not create Canvas Context');
-			return;
+			throw new Error('Could not create Canvas Context');
 		}
+
+		history = get(playersLogtimes)[get(serverKind)] ?? [];
+
+		Chart.register(...registerables);
 		chart = new Chart(ctx, {
-			// locale: 'en-US',
 			type: 'line',
 			data: {
-				labels,
+				labels: ['new'],
 				datasets: [],
 			},
-			options: {
-				// tension: 0,
-				responsive: true,
-				maintainAspectRatio: false,
-				plugins: {
-					legend: {
-						display: false,
-					},
-					tooltip: {
-						callbacks: {
-							label: function (context: any) {
-								return (
-									context.dataset.label +
-									': ' +
-									new getTime(parseInt(context.raw)).logtime()
-								);
-							},
-						},
-					},
-				},
-				interaction: {
-					intersect: false,
-					mode: 'nearest',
-				},
-				elements: {
-					point: {
-						radius: 0,
-					},
-				},
-				scales: {
-					y: {
-						ticks: {
-							display: false,
-						},
-						grid: {
-							color: '#222222',
-						},
-						beginAtZero: true,
-					},
-					x: {
-						ticks: {
-							display: false,
-						},
-						grid: {
-							color: '#222222',
-						},
-					},
-				},
-			},
+			options,
 		});
 	});
 </script>

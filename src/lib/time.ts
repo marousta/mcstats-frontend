@@ -1,30 +1,44 @@
-export default class getTime {
-	time:	number;
-	d: 		Date;
-	months:	Array<string>;
-	date:	any;
-	format:	any;
+export class getTime {
+	private readonly time: number;
+	private readonly d: Date;
+	private readonly months: Array<string>;
+	private readonly date: any;
+	private readonly format: any;
 
-	constructor (timestamp: number)
-	{
-		if (timestamp === undefined) {
-			throw new Error("undefined value timestamp");
+	constructor(date: number | string | Date = new Date()) {
+		if (date === undefined) {
+			throw new Error('undefined value date');
 		}
-		this.time = timestamp;
-		this.d = new Date(timestamp * 1000);
+
+		switch (typeof date) {
+			case 'number':
+				this.time = date;
+				this.d = new Date(date * 1000);
+				break;
+			case 'string':
+				const d = new Date(date);
+				this.time = Math.floor(d.getTime() / 1000);
+				this.d = d;
+				break;
+			case 'object':
+				this.time = Math.floor(date.getTime() / 1000);
+				this.d = date;
+				break;
+		}
+
 		this.months = [
-			"January",
-			"Febuary",
-			"March",
-			"April",
-			"May",
-			"June",
-			"July",
-			"August",
-			"September",
-			"October",
-			"November",
-			"December",
+			'January',
+			'Febuary',
+			'March',
+			'April',
+			'May',
+			'June',
+			'July',
+			'August',
+			'September',
+			'October',
+			'November',
+			'December',
 		];
 		this.date = {
 			y: this.d.getFullYear(),
@@ -39,47 +53,60 @@ export default class getTime {
 				if (meridiem === 0) {
 					meridiem = 12;
 				}
-				return (this.date.hh == 0 ? "12" : meridiem) + ":" + (this.date.mm < 10 ? "0" + this.date.mm : this.date.mm);
+				return (
+					(this.date.hh == 0 ? '12' : meridiem) +
+					':' +
+					(this.date.mm < 10 ? '0' + this.date.mm : this.date.mm)
+				);
 			},
 			meridiem: () => {
-				return (this.date.hh > 12 ? "pm" : (this.date.hh == 0 ? "pm" : "am"));
-			}
+				return this.date.hh > 12 ? 'pm' : this.date.hh == 0 ? 'pm' : 'am';
+			},
 		};
 	}
 
-	full()
-	{
-		return this.date.d + " " + this.months[this.date.m] + " " + this.date.y + " - " + this.format.time() + this.format.meridiem();
+	full() {
+		return (
+			this.date.d +
+			' ' +
+			this.months[this.date.m] +
+			' ' +
+			this.date.y +
+			' - ' +
+			this.format.time() +
+			this.format.meridiem()
+		);
 	}
 
-	lite()
-	{
-		return this.date.d + " " + this.months[this.date.m] + " " + this.date.y;
+	lite() {
+		return this.date.d + ' ' + this.months[this.date.m] + ' ' + this.date.y;
 	}
 
-	half()
-	{
+	half() {
 		return this.format.time() + this.format.meridiem();
 	}
 
-	logtime()
-	{
+	logtime() {
 		let t = {
 			ss: Math.floor(this.time % 60),
-			mm: Math.floor(this.time / 60 % 60),
-			hh: Math.floor(this.time / 60 / 60 % 24),
+			mm: Math.floor((this.time / 60) % 60),
+			hh: Math.floor((this.time / 60 / 60) % 24),
 			d: Math.floor(this.time / 60 / 60 / 24),
 		};
 
-		let ret = "";
-		t.d ? ret += t.d + (t.d > 1 ? " days " : " day ") : 0;
-		t.hh ? ret += t.hh + "h " : 0;
-		t.mm ? ret += (t.mm < 10 ? "0" + t.mm : t.mm) + "m " : 0;
-		t.ss ? ret += (t.ss < 10 ? "0" + t.ss : t.ss) + "s": 0;
+		let ret = '';
+		t.d ? (ret += t.d + (t.d > 1 ? ' days ' : ' day ')) : 0;
+		t.hh ? (ret += t.hh + 'h ') : 0;
+		t.mm ? (ret += (t.mm < 10 ? '0' + t.mm : t.mm) + 'm ') : 0;
+		t.ss ? (ret += (t.ss < 10 ? '0' + t.ss : t.ss) + 's') : 0;
 
-		if (ret == "") {
-			ret = "00s";
+		if (ret == '') {
+			ret = '00s';
 		}
 		return ret;
+	}
+
+	timestamp() {
+		return this.time;
 	}
 }

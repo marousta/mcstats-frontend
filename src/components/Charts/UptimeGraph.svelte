@@ -1,49 +1,124 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Chart } from 'chart.js';
+	import { Chart, registerables, type ChartOptions } from 'chart.js';
 	import α from 'color-alpha';
 
-	import { uptime } from '../../stores/ws';
-	import getTIme from '../../lib/time';
+	import { serverKind, serverUptime } from '../../stores/stores';
+	import { getTime } from '../../lib/time';
+	import type { ServerKind } from '../../stores/websocket/types';
+	import { get } from 'svelte/store';
+	import type { ServerUptimeData } from '../../stores/types';
 
-	let uptimeData: { up: number; down: number }[];
+	export let label: string;
+
+	let backgroundColor = 'blue';
+
+	let canvas: HTMLCanvasElement;
+
 	let chart: Chart;
+	const options: ChartOptions = {
+		locale: 'en-US',
+		responsive: true,
+		maintainAspectRatio: false,
+		line: {
+			datasets: {
+				tension: 0,
+			},
+		},
+		plugins: {
+			legend: {
+				display: false,
+			},
+			tooltip: {
+				callbacks: {
+					label: function (context: any) {
+						return new getTime(context.raw.y).logtime();
+					},
+				},
+			},
+		},
+		interaction: {
+			intersect: false,
+			mode: 'nearest',
+		},
+		elements: {
+			point: {
+				radius: 0,
+				backgroundColor: 'cyan',
+			},
+			line: {
+				backgroundColor: α('cyan', 0.1),
+				borderColor: 'cyan',
+				borderWidth: 1,
+				fill: true,
+			},
+		},
+		animation: {
+			duration: 0,
+		},
+		scales: {
+			y: {
+				ticks: {
+					display: false,
+				},
+				grid: {
+					color: '#222222',
+				},
+				beginAtZero: true,
+			},
+			x: {
+				ticks: {
+					display: false,
+				},
+				grid: {
+					color: '#222222',
+				},
+			},
+		},
+	};
 
-	uptime.subscribe((value) => (uptimeData = value));
-
-	let label = 'Uptime';
+	// Store
+	const kind: ServerKind = get(serverKind);
+	let uptime: ServerUptimeData[];
+	serverUptime.subscribe((value) => {
+		if (!value[kind]) {
+			console.log('Hm 4');
+			return;
+		}
+		uptime = value[kind]!;
+	});
 
 	$: {
-		const data = uptimeData.map((v) => [
-			{
-				x: v.up,
-				y: 0,
-			},
-			{
-				x: v.down,
-				y: v.down - v.up,
-			},
-			{
-				x: v.down,
-				y: 0,
-			},
-		]);
-		let set: { x: number; y: number }[] = [];
+		if (uptime && chart) {
+			const data = uptime.map((v) => [
+				{
+					x: v.up,
+					y: 0,
+				},
+				{
+					x: v.down,
+					y: v.down - v.up,
+				},
+				{
+					x: v.down,
+					y: 0,
+				},
+			]);
+			let set: { x: number; y: number }[] = [];
 
-		for (const tuple of data) {
-			set = [...set, ...tuple];
-		}
+			for (const tuple of data) {
+				set = [...set, ...tuple];
+			}
 
-		set.pop();
+			set.pop();
 
-		const ts = new Date().valueOf() / 1000;
-		if (set.length > 0) {
-			set[set.length - 1].x = -set[set.length - 1].y;
-			set[set.length - 1].y = ts - set[set.length - 1].x;
-			set[set.length - 1].x = ts;
-		}
+			const ts = new Date().valueOf() / 1000;
+			if (set.length > 0) {
+				set[set.length - 1].x = -set[set.length - 1].y;
+				set[set.length - 1].y = ts - set[set.length - 1].x;
+				set[set.length - 1].x = ts;
+			}
 
-		if (chart) {
 			chart.data.datasets = [
 				{
 					data: [...set],
@@ -55,16 +130,9 @@
 			} else {
 				canvas.parentElement?.classList.add('no-data');
 			}
-			// console.log(uptimeData, chart.data.datasets[0]);
 			chart.update();
 		}
 	}
-
-	export let backgroundColor = 'blue';
-
-	let backgroundColorFinal: string;
-
-	let canvas: HTMLCanvasElement;
 
 	onMount(() => {
 		backgroundColor = α(backgroundColor, 0.1);
@@ -73,65 +141,14 @@
 			console.error('Could not create Canvas Context');
 			return;
 		}
+
+		uptime = get(serverUptime)[get(serverKind)] ?? [];
+
+		Chart.register(...registerables);
 		chart = new Chart(ctx, {
-			// locale: 'en-US',
 			type: 'scatter',
 			data: { datasets: [] },
-			options: {
-				// tension: 0,
-				responsive: true,
-				maintainAspectRatio: false,
-				plugins: {
-					legend: {
-						display: false,
-					},
-					tooltip: {
-						callbacks: {
-							label: function (context: any) {
-								return new getTIme(context.raw.y).logtime();
-							},
-						},
-					},
-				},
-				interaction: {
-					intersect: false,
-					mode: 'nearest',
-				},
-				elements: {
-					point: {
-						radius: 0,
-						backgroundColor: 'cyan',
-					},
-					line: {
-						backgroundColor: α('cyan', 0.1),
-						borderColor: 'cyan',
-						borderWidth: 1,
-						fill: true,
-					},
-				},
-				animation: {
-					duration: 0,
-				},
-				scales: {
-					y: {
-						ticks: {
-							display: false,
-						},
-						grid: {
-							color: '#222222',
-						},
-						beginAtZero: true,
-					},
-					x: {
-						ticks: {
-							display: false,
-						},
-						grid: {
-							color: '#222222',
-						},
-					},
-				},
-			},
+			options,
 		});
 	});
 </script>

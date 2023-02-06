@@ -1,35 +1,85 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Chart } from 'chart.js';
-	import type { DataEntry } from '../../types';
-	import { unfoldEntries } from '../../types';
-	import { totalLogtime } from '../../stores/ws';
-	import type { TotalLogtime } from '../../types';
-	import getTime from '../../lib/time';
+	import { Chart, registerables, type ChartOptions } from 'chart.js';
 
-	let players: TotalLogtime[] = [];
-	totalLogtime.subscribe((value) => (players = value));
+	import { playersLogtimes, serverKind } from '../../stores/stores';
+	import { getTime } from '../../lib/time';
+	import type { ResponseHistoryPlayersLogtimes } from '../../stores/types';
+	import { get } from 'svelte/store';
+	import type { ServerKind } from '../../stores/websocket/types';
 
-	export let entries: DataEntry[];
 	export let label: string;
 
+	let canvas: HTMLCanvasElement;
+
 	let chart: Chart;
+	const options: ChartOptions = {
+		locale: 'en-US',
+		responsive: true,
+		maintainAspectRatio: false,
+		plugins: {
+			legend: {
+				display: false,
+			},
+			tooltip: {
+				callbacks: {
+					label: function (context: any) {
+						return new getTime(parseInt(context.raw)).logtime();
+					},
+				},
+			},
+		},
+		interaction: {
+			intersect: false,
+			mode: 'nearest',
+		},
+		scales: {
+			y: {
+				ticks: {
+					display: false,
+				},
+				grid: {
+					color: '#222222',
+				},
+				beginAtZero: true,
+			},
+			x: {
+				ticks: {
+					display: false,
+				},
+				grid: {
+					color: '#222222',
+				},
+			},
+		},
+	};
+
+	// Store
+	const kind: ServerKind = get(serverKind);
+	let history: ResponseHistoryPlayersLogtimes[];
+	playersLogtimes.subscribe((value) => {
+		if (!value[kind]) {
+			console.log('Hm 2');
+			return;
+		}
+		history = value[kind]!;
+	});
 
 	$: {
-		if (players && chart) {
+		if (history && chart) {
 			let datasets = [];
 			let labels: string[] = [];
-			if (players.length > 0) {
-				labels = players.map((p) => p.username);
+			if (history.length > 0) {
+				labels = history.map((p) => p.username);
 			}
-			const colors = players.map(() => {
+			const colors = history.map(() => {
 				return `rgb(${Math.floor(Math.random() * 200 + 54).toString()},${Math.floor(
 					Math.random() * 200 + 54,
 				).toString()},${Math.floor(Math.random() * 200 + 54).toString()})`;
 			});
 			datasets.push({
 				label: 'Total logtime',
-				data: [...players.map((p) => p.todayLogtime)],
+				data: [...history.map((p) => p.current)],
 				backgroundColor: colors,
 			});
 			chart.data.labels = [...labels, 'Today'];
@@ -43,63 +93,23 @@
 		}
 	}
 
-	let canvas: HTMLCanvasElement;
-
-	let [labels, data] = unfoldEntries(entries);
-
 	onMount(() => {
 		const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
 		if (!ctx) {
 			console.error('Could not create Canvas Context');
 			return;
 		}
+
+		history = get(playersLogtimes)[get(serverKind)] ?? [];
+
+		Chart.register(...registerables);
 		chart = new Chart(ctx, {
-			// locale: 'en-US',
 			type: 'bar',
 			data: {
-				labels,
+				labels: ['new'],
 				datasets: [],
 			},
-			options: {
-				// tension: 0,
-				responsive: true,
-				maintainAspectRatio: false,
-				plugins: {
-					legend: {
-						display: false,
-					},
-					tooltip: {
-						callbacks: {
-							label: function (context: any) {
-								return new getTime(parseInt(context.raw)).logtime();
-							},
-						},
-					},
-				},
-				interaction: {
-					intersect: false,
-					mode: 'nearest',
-				},
-				scales: {
-					y: {
-						ticks: {
-							display: false,
-						},
-						grid: {
-							color: '#222222',
-						},
-						beginAtZero: true,
-					},
-					x: {
-						ticks: {
-							display: false,
-						},
-						grid: {
-							color: '#222222',
-						},
-					},
-				},
-			},
+			options,
 		});
 	});
 </script>

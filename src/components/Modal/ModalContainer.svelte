@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { modals, ModalType, type ModalData } from '../../stores/modal';
+	import { modals, type ModalData } from '../../stores/modal';
 	import Modal from '../Modal/Modal.svelte';
 
 	let lModals: ModalData[] = [];

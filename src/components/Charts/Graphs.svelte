@@ -1,33 +1,39 @@
 <script lang="ts">
-	import { daily, uptime } from '../../stores/ws';
-	import type { DataEntry } from '../../types';
-	import PlayersOnlineChart from '../Charts/PlayersOnlineChart.svelte';
-	import PlayersLogtimeGraphBar from '../Charts/PlayerLogtimeGraphBar.svelte';
-	import PlayersLogtimeGraph from '../Charts/PlayerLogtimeGraph.svelte';
-	import UptimeGraph from '../Charts/UptimeGraph.svelte';
+	import {
+		initHistoryLogtimes,
+		initHistoryPlayersMaxOnline,
+		initHistoryServerUptime,
+	} from '../../stores/api';
+	import { serverKind } from '../../stores/stores';
+	import type { ServerKind } from '../../stores/websocket/types';
+	import PlayersLogtimeGraph from './PlayerLogtimeGraph.svelte';
+	import PlayersLogtimeGraphBar from './PlayerLogtimeGraphBar.svelte';
+	import PlayersOnlineChart from './PlayersOnlineChart.svelte';
+	import UptimeGraph from './UptimeGraph.svelte';
+	import { browser } from '$app/environment';
+	import { fade } from 'svelte/transition';
+	import { get } from 'svelte/store';
 
-	let uptimeData: { up: number; down: number }[];
-	let uptimeEntries: DataEntry[];
+	let kind: ServerKind = get(serverKind);
 
-	$: {
-		if (uptimeEntries) {
-			for (const session of uptimeData) {
-				uptimeEntries.push({ label: session.up.toString(), data: 0 });
-				uptimeEntries.push({ label: session.up.toString(), data: 0 });
-			}
-		}
-	}
-
-	uptime.subscribe((value) => {
-		uptimeData = value;
+	serverKind.subscribe(async (value) => {
+		kind = value;
 	});
+
+	if (browser) {
+		serverKind.subscribe(async (value) => {
+			await initHistoryLogtimes(value);
+			await initHistoryPlayersMaxOnline(value);
+			await initHistoryServerUptime(value);
+		});
+	}
 </script>
 
-<div class="graphs">
-	<UptimeGraph />
-	<PlayersOnlineChart backgroundColor="white" />
-	<PlayersLogtimeGraphBar label="Players Logtime" entries={[]} />
-	<PlayersLogtimeGraph label="Players Logtime History" entries={[]} />
+<div class="graphs" in:fade={{ duration: 200, delay: 200 }}>
+	<UptimeGraph label="Uptime" />
+	<PlayersOnlineChart label="Max Players Online" />
+	<PlayersLogtimeGraphBar label="Players Logtime" />
+	<PlayersLogtimeGraph label="Players Logtime History" />
 </div>
 
 <style lang="scss">

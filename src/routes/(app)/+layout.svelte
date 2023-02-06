@@ -1,18 +1,25 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-
-	import { connect } from '../../stores/ws';
-	import Footer from '../../components/Footer.svelte';
-	import Nav from '../../components/Nav.svelte';
+	import Nav from '../../components/Navbar/Nav.svelte';
 	import ModalContainer from '../../components/Modal/ModalContainer.svelte';
 	import { server_name } from '../../stores/server_properties';
-
-	onMount(() => {
-		connect();
-	});
+	import wsConnect from '../../stores/websocket/ws';
+	import { initFetchers } from '../../stores/api';
 </script>
 
-<Nav siteName={server_name} />
-<ModalContainer />
-<slot />
-<Footer />
+{#await initFetchers()}
+	<div
+		style="z-index: -1; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)">
+		LOADING
+	</div>
+{:then}
+	{#await wsConnect()}
+		<div
+			style="z-index: -1; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%)">
+			LOADING
+		</div>
+	{:then}
+		<Nav />
+		<ModalContainer />
+		<slot />
+	{/await}
+{/await}
