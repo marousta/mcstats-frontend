@@ -19,7 +19,7 @@
 	let endpoints: number = 0;
 
 	function startup() {
-		return $page.url.pathname.split('/')[1] as ServerKind;
+		return ($page.url.pathname.split('/')[1] as ServerKind) || $serverKind;
 	}
 
 	function understand(value: any | StoreFetcher | null) {
