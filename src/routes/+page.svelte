@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { server_name } from '../stores/server_properties';
 	import { onMount } from 'svelte';
-	import { serverKind } from '../stores/stores';
 	import { goto } from '$app/navigation';
+
+	import { serverKind } from '../stores/stores';
+	import { server_name } from '../stores/server_properties';
 
 	onMount(() => {
 		goto($serverKind);

@@ -1,17 +1,19 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
+	import type { ChartOptions } from 'chart.js';
+
+	import PlayersLogtimeGraph from './Type/PlayerLogtimeGraph.svelte';
+	import PlayersLogtimeGraphBar from './Type/PlayerLogtimeGraphBar.svelte';
+	import PlayersOnlineChart from './Type/PlayersOnlineChart.svelte';
+	import UptimeGraph from './Type/UptimeGraph.svelte';
+	import Graph from './Graph.svelte';
+
+	import { serverKind } from '../../stores/stores';
 	import {
 		initHistoryLogtimes,
 		initHistoryPlayersMaxOnline,
 		initHistoryServerUptime,
 	} from '../../stores/api';
-	import PlayersLogtimeGraph from './Type/PlayerLogtimeGraph.svelte';
-	import PlayersLogtimeGraphBar from './Type/PlayerLogtimeGraphBar.svelte';
-	import PlayersOnlineChart from './Type/PlayersOnlineChart.svelte';
-	import UptimeGraph from './Type/UptimeGraph.svelte';
-	import { fade } from 'svelte/transition';
-	import Graph from './Graph.svelte';
-	import { serverKind } from '../../stores/stores';
-	import type { ChartOptions } from 'chart.js';
 
 	let promises: Promise<void>[] = [];
 

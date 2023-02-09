@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+
+	import { ServerKind } from '../../types/global';
 	import { serverKind } from '../../stores/stores';
-	import { ServerKind } from '../../stores/websocket/types';
 
 	export let left: string;
 	export let right: string;

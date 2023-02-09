@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { mcConnectionStatus, serverKind, wsConnectonStatus } from '../../stores/stores';
-	import { mcStatus, wsStatus } from '../../stores/types';
-	import wsConnect from '../../stores/websocket/ws';
-
 	import PlayerData from './PlayerData.svelte';
+
+	import { mcConnectionStatus, serverKind, wsConnectonStatus } from '../../stores/stores';
+	import wsConnect from '../../stores/ws';
+
+	import { mcStatus, wsStatus } from '../../types/global';
 
 	function keydown(e: KeyboardEvent) {
 		if (e.key == 'Enter') wsConnect();

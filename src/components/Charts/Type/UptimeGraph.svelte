@@ -3,10 +3,12 @@
 	import { Chart, registerables, type ChartOptions } from 'chart.js';
 	import α from 'color-alpha';
 
-	import { serverKind, serverUptime } from '../../../stores/stores';
-	import { getTime } from '../../../lib/time';
-	import type { ServerUptimeData } from '../../../stores/types';
 	import Graph from '../Graph.svelte';
+
+	import { getTime } from '$lib/time';
+
+	import type { ServerUptimeData } from '../../../types/global';
+	import { serverKind, serverUptime } from '../../../stores/stores';
 
 	export let label: string;
 	export let config: ChartOptions;

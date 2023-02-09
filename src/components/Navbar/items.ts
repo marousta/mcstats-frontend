@@ -1,4 +1,4 @@
-import { ServerKind } from '../../stores/websocket/types';
+import { ServerKind } from '../../types/global';
 
 export interface HamburgerItem {
 	name: string;

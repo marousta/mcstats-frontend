@@ -1,5 +1,6 @@
 import type { ParamMatcher } from '@sveltejs/kit';
-import { ServerKind } from '../stores/websocket/types';
+
+import { ServerKind } from '../types/global';
 
 export const match = ((param) => {
 	return Object.values(ServerKind).includes(param as any);

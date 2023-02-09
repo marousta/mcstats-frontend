@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ResponsePlayersCurrentlyOnline } from '../../stores/websocket/types';
+	import type { ResponsePlayersCurrentlyOnline } from '../../types/ws';
 
 	export let player: ResponsePlayersCurrentlyOnline;
 

@@ -3,10 +3,12 @@
 	import { Chart, registerables, type ChartOptions } from 'chart.js';
 	import α from 'color-alpha';
 
-	import { playersMaxOnline, serverKind } from '../../../stores/stores';
-	import type { ResponseHistoryPlayersMaxOnline } from '../../../stores/types';
 	import { getTime } from '$lib/time';
+
 	import Graph from '../Graph.svelte';
+
+	import type { HistoryPlayersData } from '../../../types/global';
+	import { playersMaxOnline, serverKind } from '../../../stores/stores';
 
 	export let label: string;
 	export let config: ChartOptions;
@@ -22,9 +24,9 @@
 	};
 
 	// Store
-	let history: ResponseHistoryPlayersMaxOnline[] = $playersMaxOnline[$serverKind];
+	let history: HistoryPlayersData[] = $playersMaxOnline[$serverKind];
 
-	function unfoldEntries(entries: ResponseHistoryPlayersMaxOnline[]): [string[], number[]] {
+	function unfoldEntries(entries: HistoryPlayersData[]): [string[], number[]] {
 		const labels: string[] = [];
 		const data: number[] = [];
 

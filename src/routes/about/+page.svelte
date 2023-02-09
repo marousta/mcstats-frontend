@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+
 	import { server_name } from '../../stores/server_properties';
 </script>
 

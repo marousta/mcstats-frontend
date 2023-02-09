@@ -1,16 +1,4 @@
-/**
- * Imports
- */
-
-export enum ServerKind {
-	Vanilla = 'vanilla',
-	Modded = 'modded',
-}
-
-export interface ServerInfos {
-	version: string;
-	capacity: number;
-}
+import type { ServerInfos, ServerKind } from './global';
 
 /**
  * Enums

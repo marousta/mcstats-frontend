@@ -1,7 +1,6 @@
 import type ReconnectingWebSocket from 'reconnecting-websocket';
 import { writable, type Writable } from 'svelte/store';
 
-import { mcStatus, wsStatus } from './types';
 import type {
 	StoreFetcher,
 	StoreInit,
@@ -11,8 +10,9 @@ import type {
 	StorePlayersLogtimes,
 	StorePlayersMaxOnline,
 	StoreServerUptime,
-} from './types';
-import { ServerKind } from './websocket/types';
+} from '../types/stores';
+import { mcStatus, wsStatus } from '../types/global';
+import { ServerKind } from '../types/global';
 
 export const playersCurrentlyOnlineInit: Writable<boolean> = writable(false);
 export const playersCurrentlyOnline: Writable<StorePlayers> = writable({

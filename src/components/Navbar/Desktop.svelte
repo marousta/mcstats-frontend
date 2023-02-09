@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { server_name } from '../../stores/server_properties';
-	import { serverKind } from '../../stores/stores';
-	import { ServerKind } from '../../stores/websocket/types';
 	import Switcher from './Switcher.svelte';
+
+	import { ServerKind } from '../../types/global';
+	import { serverKind } from '../../stores/stores';
+	import { server_name } from '../../stores/server_properties';
 
 	export let endpoints: boolean;
 </script>

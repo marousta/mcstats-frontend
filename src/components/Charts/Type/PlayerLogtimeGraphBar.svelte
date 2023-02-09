@@ -2,11 +2,13 @@
 	import { onMount } from 'svelte';
 	import { Chart, registerables, type ChartOptions } from 'chart.js';
 
-	import { playersLogtimes, serverKind } from '../../../stores/stores';
-	import { getTime } from '../../../lib/time';
-	import type { ResponseHistoryPlayersLogtimes } from '../../../stores/types';
-	import Graph from '../Graph.svelte';
+	import { getTime } from '$lib/time';
 	import genColor from '$lib/generate_color';
+
+	import Graph from '../Graph.svelte';
+
+	import { playersLogtimes, serverKind } from '../../../stores/stores';
+	import type { ResponseHistoryPlayersLogtimes } from '../../../types/api';
 
 	export let label: string;
 	export let config: ChartOptions;

@@ -1,3 +1,4 @@
+import { get } from 'svelte/store';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 import {
@@ -7,9 +8,10 @@ import {
 	playersCurrentlyOnlineInit,
 	ws,
 	wsConnectonStatus,
-} from '../stores';
+} from './stores';
+import { initPlayersCurrentlyOnline } from './api';
 
-import { wsStatus, mcStatus } from '../types';
+import { wsStatus, mcStatus } from '../types/global';
 import {
 	WebsocketNamespace,
 	WebsocketServerEvent,
@@ -17,10 +19,8 @@ import {
 	type WebsocketPlayersChange,
 	type WebsocketServerStatus,
 	type WebsocketServerVersion,
-} from './types';
-import { get } from 'svelte/store';
-import { ServerKind } from './types';
-import { initPlayersCurrentlyOnline } from '../api';
+} from '../types/ws';
+import { ServerKind } from '../types/global';
 
 const intervalSeconds: number = 5;
 

@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { mcStatus } from './types';
+
 import {
 	playersMaxOnline,
 	fetcher,
@@ -13,16 +13,10 @@ import {
 	playersMaxOnlineInit,
 	serverUptimeInit,
 } from './stores';
-import type {
-	ResponseHistoryPlayersLogtimes,
-	ResponseHistoryPlayersMaxOnline,
-	ResponseHistoryServerUptime,
-} from './types';
-import {
-	ServerKind,
-	type ResponsePlayersCurrentlyOnline,
-	type ResponseServerInfos,
-} from './websocket/types';
+
+import { mcStatus, ServerKind, type HistoryPlayersData } from '../types/global';
+import type { ResponseHistoryPlayersLogtimes, ResponseHistoryServerUptime } from '../types/api';
+import type { ResponsePlayersCurrentlyOnline, ResponseServerInfos } from '../types/ws';
 
 export class Api {
 	private readonly kind: ServerKind;
@@ -63,7 +57,7 @@ export class Api {
 		return this.fetch('charts/server/uptime');
 	}
 
-	async playersMax(): Promise<ResponseHistoryPlayersMaxOnline[]> {
+	async playersMax(): Promise<HistoryPlayersData[]> {
 		return this.fetch('charts/players/max');
 	}
 

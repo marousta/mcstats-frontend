@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { server_name } from '../../stores/server_properties';
-	import { onMount } from 'svelte';
-	import { serverKind } from '../../stores/stores';
 	import Vanilla from '../../components/Home/Vanilla.svelte';
-	import { goto } from '$app/navigation';
-	import { ServerKind } from '../../stores/websocket/types';
 	import Modded from '../../components/Home/Modded.svelte';
 	import Error from '../../components/Error.svelte';
+
+	import { serverKind } from '../../stores/stores';
+	import { ServerKind } from '../../types/global';
+	import { server_name } from '../../stores/server_properties';
 
 	$: {
 		$serverKind;

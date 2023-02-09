@@ -1,6 +1,5 @@
 <script lang="ts">
 	// From https://svelte.dev/repl/26eb44932920421da01e2e21539494cd?version=3.55.1
-
 	import { onMount } from 'svelte';
 
 	export let query: string;

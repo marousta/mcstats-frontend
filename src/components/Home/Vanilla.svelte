@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { mcInfos } from '../../stores/stores';
-	import { ServerKind } from '../../stores/websocket/types';
 	import { fly } from 'svelte/transition';
+
 	import PlayersOnline from '../Players/PlayersOnline.svelte';
+
+	import { ServerKind } from '../../types/global';
+	import { mcInfos } from '../../stores/stores';
 </script>
 
 <div

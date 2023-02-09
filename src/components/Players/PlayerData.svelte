@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { mcInfos, playersCurrentlyOnline, serverKind } from '../../stores/stores';
-
 	import PlayerHead from './PlayerHead.svelte';
+
+	import { mcInfos, playersCurrentlyOnline, serverKind } from '../../stores/stores';
 </script>
 
 <div class="player-heads-text">

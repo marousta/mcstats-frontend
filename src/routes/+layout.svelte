@@ -1,18 +1,18 @@
 <script lang="ts">
-	import Nav from '../components/Navbar/NavContainer.svelte';
-	import wsConnect from '../stores/websocket/ws';
-	import { initFetchers } from '../stores/api';
-	import { ServerKind } from '../stores/websocket/types';
-	import type { StoreFetcher } from '../stores/types';
-	import { serverKind } from '../stores/stores';
-	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
-	import { browser } from '$app/environment';
-	import Error from '../components/Error.svelte';
-	import NProgress from 'nprogress';
-	import { navigating } from '$app/stores';
-	import 'nprogress/nprogress.css';
 	import { onMount } from 'svelte';
+	import { page, navigating } from '$app/stores';
+	import NProgress from 'nprogress';
+	import 'nprogress/nprogress.css';
+
+	import Nav from '../components/Navbar/NavContainer.svelte';
+	import Error from '../components/Error.svelte';
+
+	import { serverKind } from '../stores/stores';
+
+	import { ServerKind } from '../types/global';
+	import type { StoreFetcher } from '../types/stores';
+	import { initFetchers } from '../stores/api';
+	import wsConnect from '../stores/ws';
 
 	let load = [initFetchers(), wsConnect()];
 

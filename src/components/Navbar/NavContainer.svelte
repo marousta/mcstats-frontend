@@ -1,9 +1,11 @@
 <script lang="ts">
-	import { serverKind } from '../../stores/stores';
-	import MediaQuery from '../MediaQuery.svelte';
 	import Desktop from './Desktop.svelte';
 	import Hamburger from './Hamburger.svelte';
-	import { items as entries, type HamburgerItem, type HamburgerItems } from './items';
+	import MediaQuery from '../MediaQuery.svelte';
+
+	import { serverKind } from '../../stores/stores';
+
+	import { items as entries, type HamburgerItem } from './items';
 
 	export let endpoints: boolean;
 
