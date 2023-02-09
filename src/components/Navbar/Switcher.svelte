@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { get } from 'svelte/store';
+	import { page } from '$app/stores';
 	import { serverKind } from '../../stores/stores';
 	import { ServerKind } from '../../stores/websocket/types';
 
@@ -10,17 +10,11 @@
 	left = left.charAt(0).toUpperCase() + left.slice(1);
 	right = right.charAt(0).toUpperCase() + right.slice(1);
 
-	let kind: ServerKind = get(serverKind);
-
-	serverKind.subscribe((value) => {
-		kind = value;
-	});
-
 	function preserveScroll(k: ServerKind) {
-		const old = kind;
+		const old = $serverKind;
 		serverKind.set(k);
 
-		goto(window.location.pathname.replace(old, k), {
+		goto($page.url.pathname.replace(old, k), {
 			noScroll: true,
 		});
 	}
@@ -41,10 +35,8 @@
 		type="checkbox"
 		class="checkbox"
 		on:input={checked}
-		checked={kind === ServerKind.Modded}
-		data-left={left}
-		data-right={right} />
-	<div class="knobs" />
+		checked={$serverKind === ServerKind.Modded} />
+	<div class="knobs" data-left={left} data-right={right} />
 	<div class="layer" />
 </div>
 
@@ -138,4 +130,12 @@
 			right: 4px;
 		}
 	}
+
+	// @media screen and (max-width: 800px) {
+	// 	.button {
+	// 		position: fixed;
+	// 		right: 20px;
+	// 		bottom: 30px;
+	// 	}
+	// }
 </style>

@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { mcStatus } from '../types';
+import { mcStatus } from './types';
 import {
 	playersMaxOnline,
 	fetcher,
@@ -7,13 +7,22 @@ import {
 	mcInfos,
 	playersLogtimes,
 	serverUptime,
+	playersCurrentlyOnline,
+	playersCurrentlyOnlineInit,
+	playersLogtimesInit,
+	playersMaxOnlineInit,
+	serverUptimeInit,
 } from './stores';
 import type {
 	ResponseHistoryPlayersLogtimes,
 	ResponseHistoryPlayersMaxOnline,
 	ResponseHistoryServerUptime,
 } from './types';
-import { ServerKind, type ResponseServerInfos } from './websocket/types';
+import {
+	ServerKind,
+	type ResponsePlayersCurrentlyOnline,
+	type ResponseServerInfos,
+} from './websocket/types';
 
 export class Api {
 	private readonly kind: ServerKind;
@@ -33,7 +42,7 @@ export class Api {
 		})
 			.then((r) => r.json())
 			.catch((e) => {
-				console.log(e);
+				console.error(e);
 				return null;
 			});
 	}
@@ -42,11 +51,11 @@ export class Api {
 		return this.fetch('server/status');
 	}
 
-	async serverVersion(): Promise<ResponseServerInfos> {
-		return this.fetch('server/version');
+	async serverInfos(): Promise<ResponseServerInfos> {
+		return this.fetch('server/infos');
 	}
 
-	async playersOnline(): Promise<string[]> {
+	async playersOnline(): Promise<ResponsePlayersCurrentlyOnline[]> {
 		return this.fetch('players/online');
 	}
 
@@ -64,7 +73,7 @@ export class Api {
 
 	async initData() {
 		const status = await this.serverStatus();
-		const version = await this.serverVersion();
+		const version = await this.serverInfos();
 
 		mcConnectionStatus.update((s) => {
 			s[this.kind] = status ? mcStatus.Connected : mcStatus.NotConnected;
@@ -84,7 +93,7 @@ export async function initFetchers() {
 		return fetchers;
 	}
 
-	const endpoints: string[] | null = await fetch(`${window.location.origin}/api/endpoints`, {
+	let endpoints: string[] | null = await fetch(`${window.location.origin}/api/endpoints`, {
 		method: 'GET',
 		headers: {
 			Accept: 'application/json',
@@ -92,12 +101,12 @@ export async function initFetchers() {
 	})
 		.then((r) => r.json())
 		.catch((e) => {
-			console.log(e);
+			console.error(e);
 			return null;
 		});
 
 	if (!endpoints) {
-		throw new Error('No endpoints');
+		return null;
 	}
 
 	fetchers = {
@@ -108,14 +117,16 @@ export async function initFetchers() {
 			? new Api(ServerKind.Modded)
 			: null,
 	};
+	if (!fetchers[ServerKind.Vanilla] && !fetchers[ServerKind.Modded]) {
+		return null;
+	}
 	fetcher.set(fetchers);
 
 	return fetchers;
 }
 
 export async function initHistoryLogtimes(kind: ServerKind) {
-	if (get(playersLogtimes)[kind]) {
-		console.log('already init ' + kind);
+	if (get(playersLogtimesInit)[kind]) {
 		return;
 	}
 
@@ -133,11 +144,14 @@ export async function initHistoryLogtimes(kind: ServerKind) {
 		value[kind] = history;
 		return value;
 	});
+	playersLogtimesInit.update((value) => {
+		value[kind] = true;
+		return value;
+	});
 }
 
 export async function initHistoryPlayersMaxOnline(kind: ServerKind) {
-	if (get(playersMaxOnline)[kind]) {
-		console.log('already init ' + kind);
+	if (get(playersMaxOnlineInit)[kind]) {
 		return;
 	}
 
@@ -155,11 +169,14 @@ export async function initHistoryPlayersMaxOnline(kind: ServerKind) {
 		value[kind] = history;
 		return value;
 	});
+	playersMaxOnlineInit.update((value) => {
+		value[kind] = true;
+		return value;
+	});
 }
 
 export async function initHistoryServerUptime(kind: ServerKind) {
-	if (get(serverUptime)[kind]) {
-		console.log('already init ' + kind);
+	if (get(serverUptimeInit)[kind]) {
 		return;
 	}
 
@@ -177,4 +194,33 @@ export async function initHistoryServerUptime(kind: ServerKind) {
 		value[kind] = uptime;
 		return value;
 	});
+	serverUptimeInit.update((value) => {
+		value[kind] = true;
+		return value;
+	});
+}
+
+export async function initPlayersCurrentlyOnline() {
+	if (get(playersCurrentlyOnlineInit)) {
+		return;
+	}
+
+	const fetchers = await initFetchers();
+	if (!fetchers) {
+		throw new Error('Failed to get players currently online, no fetcher');
+	}
+
+	const promises = [
+		fetchers[ServerKind.Vanilla]?.playersOnline(),
+		fetchers[ServerKind.Modded]?.playersOnline(),
+	];
+
+	const ret = await Promise.all(promises);
+
+	playersCurrentlyOnline.set({
+		[ServerKind.Vanilla]: ret[0] ?? [],
+		[ServerKind.Modded]: ret[1] ?? [],
+	});
+
+	playersCurrentlyOnlineInit.set(true);
 }

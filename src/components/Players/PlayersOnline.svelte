@@ -1,26 +1,9 @@
 <script lang="ts">
-	import { mcConnectionStatus, refreshCountdown, wsConnectonStatus } from '../../stores/stores';
-	import { ServerKind } from '../../stores/websocket/types';
-	import { mcStatus, wsStatus } from '../../types';
+	import { mcConnectionStatus, serverKind, wsConnectonStatus } from '../../stores/stores';
+	import { mcStatus, wsStatus } from '../../stores/types';
 	import wsConnect from '../../stores/websocket/ws';
 
 	import PlayerData from './PlayerData.svelte';
-
-	let ws_status: wsStatus;
-	let countdown: number;
-
-	let mc_status: mcStatus;
-	wsConnectonStatus.subscribe((value) => {
-		ws_status = value;
-	});
-
-	refreshCountdown.subscribe((value) => {
-		countdown = value;
-	});
-
-	mcConnectionStatus.subscribe((value) => {
-		mc_status = value[ServerKind.Modded];
-	});
 
 	function keydown(e: KeyboardEvent) {
 		if (e.key == 'Enter') wsConnect();
@@ -28,15 +11,15 @@
 </script>
 
 <div class="player-heads-container">
-	{#if ws_status == wsStatus.Connected}
+	{#if $wsConnectonStatus == wsStatus.Connected}
 		<PlayerData />
-	{:else if ws_status == wsStatus.Connecting}
+	{:else if $wsConnectonStatus == wsStatus.Connecting}
 		<div class="loading status">Loading...</div>
-	{:else if ws_status == wsStatus.NotConnected}
+	{:else if $wsConnectonStatus == wsStatus.NotConnected}
 		<div class="server-closed status">Unable to get data from server.</div>
-		<div class="status">Retrying in {countdown}s</div>
+		<div class="status">Retrying...</div>
 		<div class="refreshButton" on:click={wsConnect} on:keydown={keydown}>Refresh</div>
-	{:else if mc_status == mcStatus.NotConnected}
+	{:else if $mcConnectionStatus[$serverKind] == mcStatus.NotConnected}
 		<div class="server-closed status">Server is closed.</div>
 	{/if}
 </div>

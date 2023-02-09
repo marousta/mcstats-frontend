@@ -1,35 +1,23 @@
 <script lang="ts">
-	import { mcInfos, serverKind } from '../../stores/stores';
-	import { ServerKind, type ResponseServerInfos } from '../../stores/websocket/types';
-	import type { StoreMcVersion } from '../../stores/types';
+	import { mcInfos } from '../../stores/stores';
+	import { ServerKind } from '../../stores/websocket/types';
 	import { fly } from 'svelte/transition';
 	import PlayersOnline from '../Players/PlayersOnline.svelte';
-	import { onMount } from 'svelte';
-	import { get } from 'svelte/store';
-
-	let mc_infos: ResponseServerInfos;
-	mcInfos.subscribe((value: StoreMcVersion) => {
-		mc_infos = value[ServerKind.Vanilla];
-	});
-
-	onMount(() => {
-		mc_infos = get(mcInfos)[ServerKind.Vanilla];
-	});
 </script>
 
 <div
 	class="container"
-	in:fly={{ x: -200, duration: 200, delay: 200 }}
+	in:fly={{ x: -200, duration: 200, delay: 205 }}
 	out:fly={{ x: -200, duration: 200 }}
 >
 	<div class="disclaimer">
 		Compatible with Minecraft <b>Java Edition</b>
-		{#if mc_infos && mc_infos.java}
-			<b>{mc_infos.java.version}</b>
+		{#if $mcInfos[ServerKind.Vanilla].java}
+			<b>{$mcInfos[ServerKind.Vanilla].java.version}</b>
 		{/if}
 		and <b title="kinda">Bedrock Edition</b>
-		{#if mc_infos && mc_infos.bedrock}
-			<b>{mc_infos.bedrock.version}</b>
+		{#if $mcInfos[ServerKind.Vanilla].bedrock}
+			<b>{$mcInfos[ServerKind.Vanilla].bedrock.version}</b>
 		{/if}
 	</div>
 	<div class="tips">

@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { server_name } from '../../../stores/server_properties';
+	import { fade } from 'svelte/transition';
+	import { server_name } from '../../stores/server_properties';
 </script>
 
 <svelte:head>
 	<title>About - {server_name}</title>
 </svelte:head>
 
-<div class="about">
+<div class="about" in:fade={{ duration: 200, delay: 200 }}>
 	<p>
 		Charts made using <a
 			href="https://www.chartjs.org/"

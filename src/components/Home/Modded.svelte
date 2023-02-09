@@ -1,31 +1,19 @@
 <script lang="ts">
-	import { mcInfos, serverKind } from '../../stores/stores';
-	import { ServerKind, type ResponseServerInfos } from '../../stores/websocket/types';
-	import type { StoreMcVersion } from '../../stores/types';
+	import { mcInfos } from '../../stores/stores';
+	import { ServerKind } from '../../stores/websocket/types';
 	import { fly } from 'svelte/transition';
 	import PlayersOnline from '../Players/PlayersOnline.svelte';
-	import { onMount } from 'svelte';
-	import { get } from 'svelte/store';
-
-	let mc_infos: ResponseServerInfos;
-	mcInfos.subscribe((value: StoreMcVersion) => {
-		mc_infos = value[ServerKind.Modded];
-	});
-
-	onMount(() => {
-		mc_infos = get(mcInfos)[ServerKind.Modded];
-	});
 </script>
 
 <div
 	class="container"
-	in:fly={{ x: 200, duration: 200, delay: 200 }}
+	in:fly={{ x: 200, duration: 200, delay: 205 }}
 	out:fly={{ x: 200, duration: 200 }}
 >
 	<div class="disclaimer">
 		Modpack <b>All the Mods 8</b> (1.0.8) on Minecraft
-		{#if mc_infos && mc_infos.java}
-			<b>{mc_infos.java.version}</b>
+		{#if $mcInfos[ServerKind.Modded].java}
+			<b>{$mcInfos[ServerKind.Modded].java.version}</b>
 		{/if}
 	</div>
 	<div class="tips">

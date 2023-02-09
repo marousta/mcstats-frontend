@@ -23,7 +23,7 @@ export enum WebsocketNamespace {
 
 export enum WebsocketServerEvent {
 	Status = 'status',
-	Version = 'version',
+	Infos = 'infos',
 }
 
 export enum WebsocketPlayersEvent {
@@ -61,7 +61,7 @@ export interface ResponseServerInfos {
 }
 
 export interface WebsocketServerVersion extends WebsocketServer {
-	event: WebsocketServerEvent.Version;
+	event: WebsocketServerEvent.Infos;
 	server: {
 		kind: ServerKind;
 		version: ResponseServerInfos;
@@ -82,8 +82,10 @@ export interface WebsocketPlayersChange extends WebsocketPlayers {
 	server: {
 		kind: ServerKind;
 	};
-	players: {
-		online: number;
-		usernames: string[];
-	};
+	players: ResponsePlayersCurrentlyOnline[];
+}
+
+export interface ResponsePlayersCurrentlyOnline {
+	uuid: string;
+	username: string;
 }

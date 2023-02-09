@@ -1,37 +1,18 @@
 <script lang="ts">
-	import type { PlayerData } from '../../types';
-	import { mcInfos, players, serverKind } from '../../stores/stores';
+	import { mcInfos, playersCurrentlyOnline, serverKind } from '../../stores/stores';
 
 	import PlayerHead from './PlayerHead.svelte';
-	import { get } from 'svelte/store';
-	import type { ResponseServerInfos } from '../../stores/websocket/types';
-	import { onMount } from 'svelte';
-
-	let mc_infos: ResponseServerInfos;
-	mcInfos.subscribe((value) => {
-		mc_infos = value[get(serverKind)];
-	});
-
-	let onlinePlayers: PlayerData[] = [];
-	players.subscribe((value) => {
-		onlinePlayers = value[get(serverKind)] ?? [];
-	});
-
-	onMount(() => {
-		mc_infos = get(mcInfos)[get(serverKind)];
-		onlinePlayers = get(players)[get(serverKind)] ?? [];
-	});
 </script>
 
 <div class="player-heads-text">
 	Players Online <div class="countIndicator">
-		{onlinePlayers.length} / {mc_infos.java.capacity}
+		{$playersCurrentlyOnline[$serverKind].length} / {$mcInfos[$serverKind].java.capacity}
 	</div>
 </div>
 <div>
 	<div class="player-heads">
-		{#each onlinePlayers as player (player.id)}
-			<PlayerHead name={player.username} />
+		{#each $playersCurrentlyOnline[$serverKind] as player (player.uuid)}
+			<PlayerHead {player} />
 		{/each}
 	</div>
 </div>

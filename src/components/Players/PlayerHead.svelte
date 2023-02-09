@@ -1,14 +1,21 @@
 <script lang="ts">
-	export let name: string;
+	import type { ResponsePlayersCurrentlyOnline } from '../../stores/websocket/types';
 
-	let playerPromise = 'https://crafthead.net/avatar/';
+	export let player: ResponsePlayersCurrentlyOnline;
+
+	function getHead() {
+		const shrink = player.uuid.replaceAll('-', '');
+		return player.username.charAt(0) === '.'
+			? '/heads/Steve.png'
+			: 'https://crafthead.net/avatar/' + shrink;
+	}
 </script>
 
 <div class="player-head">
 	<div
 		class="player-head-img"
-		style="background: url('/heads/Steve.png'); color: white; background-size: 100%; image-rendering: pixelated;" />
-	<div class="player-name">{name}</div>
+		style="background-image: url('{getHead()}'); color: white; background-size: 100%; image-rendering: pixelated;" />
+	<div class="player-name">{player.username}</div>
 </div>
 
 <style lang="scss">

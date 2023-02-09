@@ -1,9 +1,10 @@
 import type ReconnectingWebSocket from 'reconnecting-websocket';
 import { writable, type Writable } from 'svelte/store';
 
-import { mcStatus, wsStatus } from '../types';
+import { mcStatus, wsStatus } from './types';
 import type {
 	StoreFetcher,
+	StoreInit,
 	StoreMcConnectionStatus,
 	StoreMcVersion,
 	StorePlayers,
@@ -13,26 +14,41 @@ import type {
 } from './types';
 import { ServerKind } from './websocket/types';
 
-export const players: Writable<StorePlayers> = writable({
-	[ServerKind.Vanilla]: null,
-	[ServerKind.Modded]: null,
+export const playersCurrentlyOnlineInit: Writable<boolean> = writable(false);
+export const playersCurrentlyOnline: Writable<StorePlayers> = writable({
+	[ServerKind.Vanilla]: [],
+	[ServerKind.Modded]: [],
+});
+
+export const serverUptimeInit: Writable<StoreInit> = writable({
+	[ServerKind.Vanilla]: false,
+	[ServerKind.Modded]: false,
 });
 export const serverUptime: Writable<StoreServerUptime> = writable({
-	[ServerKind.Vanilla]: null,
-	[ServerKind.Modded]: null,
+	[ServerKind.Vanilla]: [],
+	[ServerKind.Modded]: [],
+});
+
+export const playersMaxOnlineInit: Writable<StoreInit> = writable({
+	[ServerKind.Vanilla]: false,
+	[ServerKind.Modded]: false,
 });
 export const playersMaxOnline: Writable<StorePlayersMaxOnline> = writable({
-	[ServerKind.Vanilla]: null,
-	[ServerKind.Modded]: null,
+	[ServerKind.Vanilla]: [],
+	[ServerKind.Modded]: [],
+});
+
+export const playersLogtimesInit: Writable<StoreInit> = writable({
+	[ServerKind.Vanilla]: false,
+	[ServerKind.Modded]: false,
 });
 export const playersLogtimes: Writable<StorePlayersLogtimes> = writable({
-	[ServerKind.Vanilla]: null,
-	[ServerKind.Modded]: null,
+	[ServerKind.Vanilla]: [],
+	[ServerKind.Modded]: [],
 });
 
 export const ws: Writable<ReconnectingWebSocket | null> = writable(null);
 export const wsConnectonStatus: Writable<wsStatus> = writable(wsStatus.Connecting);
-export const refreshCountdown: Writable<number> = writable(0);
 
 export const mcConnectionStatus: Writable<StoreMcConnectionStatus> = writable({
 	[ServerKind.Vanilla]: mcStatus.NotConnected,
