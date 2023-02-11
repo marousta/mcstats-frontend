@@ -6,7 +6,6 @@
 	import PlayersLogtimeGraphBar from './Type/PlayerLogtimeGraphBar.svelte';
 	import PlayersOnlineChart from './Type/PlayersOnlineChart.svelte';
 	import UptimeGraph from './Type/UptimeGraph.svelte';
-	import Graph from './Graph.svelte';
 
 	import { serverKind } from '../../stores/stores';
 	import {
@@ -79,19 +78,16 @@
 	};
 </script>
 
-<div class="graphs" in:fade={{ duration: 200, delay: 200 }}>
-	{#await Promise.all(promises)}
-		<Graph label="Uptime" />
-		<Graph label="Max Players Online" />
-		<Graph label="Players Logtime" />
-		<Graph label="Players Logtime History" />
-	{:then}
+{#await Promise.all(promises)}
+	<div class="message">LOADING</div>
+{:then}
+	<div class="graphs" in:fade={{ duration: 200, delay: 200 }}>
 		<UptimeGraph label="Uptime" config={line_config} />
 		<PlayersOnlineChart label="Max Players Online" config={line_config} />
 		<PlayersLogtimeGraphBar label="Players Logtime" config={default_config} />
 		<PlayersLogtimeGraph label="Players Logtime History" config={line_config} />
-	{/await}
-</div>
+	</div>
+{/await}
 
 <style lang="scss">
 	.graphs {

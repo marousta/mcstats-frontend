@@ -16,12 +16,10 @@
 	<title>{server_name}</title>
 </svelte:head>
 
-{#key $serverKind}
-	{#if $serverKind === ServerKind.Vanilla}
-		<Vanilla />
-	{:else if $serverKind === ServerKind.Modded}
-		<Modded />
-	{:else}
-		<Error status={410} message={'Gone'} />
-	{/if}
-{/key}
+{#if $serverKind === ServerKind.Vanilla}
+	<Vanilla />
+{:else if $serverKind === ServerKind.Modded}
+	<Modded />
+{:else}
+	<Error status={410} message={'Gone'} />
+{/if}

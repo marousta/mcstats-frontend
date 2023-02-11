@@ -9,7 +9,7 @@
 
 <div
 	class="container"
-	in:fly={{ x: -200, duration: 200, delay: 205 }}
+	in:fly={{ x: -200, duration: 200, delay: 200 }}
 	out:fly={{ x: -200, duration: 200 }}
 >
 	<div class="disclaimer">

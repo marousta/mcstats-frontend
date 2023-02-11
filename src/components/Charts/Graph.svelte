@@ -43,7 +43,7 @@
 			position: absolute;
 			width: 98%;
 			box-sizing: border-box;
-			height: calc(100% - 100px);
+			height: calc(100vh - 100px);
 
 			.graph-container {
 				height: calc(100% - 35px);

@@ -8,35 +8,36 @@
 	export let left: string;
 	export let right: string;
 
+	let input: HTMLInputElement;
+	let checked: boolean = $serverKind === ServerKind.Modded;
+
 	left = left.charAt(0).toUpperCase() + left.slice(1);
 	right = right.charAt(0).toUpperCase() + right.slice(1);
 
-	function preserveScroll(k: ServerKind) {
+	async function preserveScroll(k: ServerKind) {
 		const old = $serverKind;
 		serverKind.set(k);
 
-		goto($page.url.pathname.replace(old, k), {
+		await goto($page.url.pathname.replace(old, k), {
 			noScroll: true,
 		});
 	}
 
-	function checked(e: Event) {
-		const target = e.target as HTMLInputElement;
-
-		if (target.checked) {
+	function check() {
+		if (input.checked) {
 			preserveScroll(ServerKind.Modded);
 		} else {
 			preserveScroll(ServerKind.Vanilla);
 		}
 	}
+
+	$: {
+		checked = $serverKind === ServerKind.Modded;
+	}
 </script>
 
 <div class="button r">
-	<input
-		type="checkbox"
-		class="checkbox"
-		on:input={checked}
-		checked={$serverKind === ServerKind.Modded} />
+	<input type="checkbox" class="checkbox" bind:this={input} on:input={check} {checked} />
 	<div class="knobs" data-left={left} data-right={right} />
 	<div class="layer" />
 </div>

@@ -8,18 +8,26 @@
 	import Error from '../components/Error.svelte';
 
 	import { serverKind } from '../stores/stores';
+	import wsConnect from '../stores/ws';
+	import { initFetchers } from '../stores/api';
 
 	import { ServerKind } from '../types/global';
 	import type { StoreFetcher } from '../types/stores';
-	import { initFetchers } from '../stores/api';
-	import wsConnect from '../stores/ws';
 
 	let load = [initFetchers(), wsConnect()];
 
 	let endpoints: number = 0;
 
+	function isServerKind(value: string) {
+		const kind = Object.values(ServerKind)
+			.filter((v) => v === value)
+			.filter((x) => x);
+		return kind.length !== 0;
+	}
+
 	function startup() {
-		return ($page.url.pathname.split('/')[1] as ServerKind) || $serverKind;
+		const path = $page.url.pathname.split('/')[1];
+		return isServerKind(path) ? (path as ServerKind) : $serverKind;
 	}
 
 	function understand(value: any | StoreFetcher | null) {
@@ -43,6 +51,7 @@
 			NProgress.start();
 		}
 		if (!$navigating) {
+			$serverKind = startup();
 			NProgress.done();
 		}
 	}

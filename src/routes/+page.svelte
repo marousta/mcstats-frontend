@@ -6,7 +6,9 @@
 	import { server_name } from '../stores/server_properties';
 
 	onMount(() => {
-		goto($serverKind);
+		goto($serverKind, {
+			replaceState: true,
+		});
 	});
 </script>
 

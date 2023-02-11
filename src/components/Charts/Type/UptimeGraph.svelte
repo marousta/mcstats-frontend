@@ -12,8 +12,6 @@
 	export let label: string;
 	export let config: ChartOptions;
 
-	let backgroundColor = 'blue';
-
 	let canvas: HTMLCanvasElement;
 	let initialized: boolean = false;
 	let status: string;
