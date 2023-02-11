@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Chart, registerables, type ChartOptions } from 'chart.js';
-	import α from 'color-alpha';
 
 	import Graph from '../Graph.svelte';
 
@@ -41,7 +40,7 @@
 				backgroundColor: 'cyan',
 			},
 			line: {
-				backgroundColor: α('cyan', 0.1),
+				backgroundColor: '#00dbdb11',
 				borderColor: 'cyan',
 				borderWidth: 1,
 				fill: true,
@@ -87,6 +86,7 @@
 				showLine: true,
 			},
 		];
+
 		if (chart.data.datasets.length != 0 && chart.data.datasets[0].data[0] !== undefined) {
 			initialized = true;
 		} else {
@@ -102,7 +102,6 @@
 	}
 
 	onMount(() => {
-		backgroundColor = α(backgroundColor, 0.1);
 		const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
 		if (!ctx) {
 			console.error('Could not create Canvas Context');

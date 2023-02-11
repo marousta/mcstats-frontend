@@ -84,7 +84,6 @@
 			datasets.push({
 				label: player.username,
 				data: [...fillData(player, maxElements), player.current],
-				backgroundColor: 'transparent',
 				borderColor: genColor(player.username),
 				borderWidth: 1,
 			});
@@ -92,6 +91,7 @@
 
 		chart.data.labels = [...labels, 'Today'];
 		chart.data.datasets = datasets;
+
 		if (chart.data.datasets.length == 0 || chart.data.datasets[0].data.length < 2) {
 			status = 'No data';
 		} else if (chart.data.datasets.length != 0) {

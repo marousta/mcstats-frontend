@@ -48,6 +48,7 @@
 				},
 				grid: {
 					color: '#222222',
+					display: false,
 				},
 				beginAtZero: true,
 			},
@@ -57,6 +58,7 @@
 				},
 				grid: {
 					color: '#222222',
+					display: false,
 				},
 			},
 		},
