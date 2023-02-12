@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 
 	import { ServerKind } from '../../types/global';
-	import { serverKind } from '../../stores/stores';
+	import { pageStatus, serverKind } from '../../stores/stores';
 
 	export let left: string;
 	export let right: string;
@@ -16,7 +16,15 @@
 
 	async function preserveScroll(k: ServerKind) {
 		const old = $serverKind;
-		serverKind.set(k);
+		console.log({ old, $serverKind, $pageStatus });
+		$serverKind = k;
+
+		if ($pageStatus === 404) {
+			await goto(`/${$serverKind}`, {
+				replaceState: true,
+			});
+			return;
+		}
 
 		await goto($page.url.pathname.replace(old, k), {
 			noScroll: true,

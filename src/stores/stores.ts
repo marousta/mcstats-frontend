@@ -60,5 +60,6 @@ export const mcInfos: Writable<StoreMcVersion> = writable({
 });
 
 export const serverKind: Writable<ServerKind> = writable(ServerKind.Vanilla);
+export const pageStatus: Writable<number> = writable(200);
 
 export const fetcher: Writable<StoreFetcher | null> = writable(null);

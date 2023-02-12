@@ -1,6 +1,10 @@
 <script lang="ts">
+	import { pageStatus } from '../stores/stores';
+
 	export let status: number;
 	export let message: string = 'error';
+
+	$pageStatus = status;
 </script>
 
 <div class="center">
@@ -14,9 +18,15 @@
 
 <style lang="scss">
 	.center {
+		user-select: none;
+		z-index: -1;
+		position: absolute;
+		top: 0;
+		left: 0;
 		display: grid;
 		align-items: center;
 		justify-items: center;
+		width: 100%;
 		height: 100vh;
 	}
 

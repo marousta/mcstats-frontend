@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { page, navigating } from '$app/stores';
 	import NProgress from 'nprogress';
 	import 'nprogress/nprogress.css';
@@ -13,6 +12,7 @@
 
 	import { ServerKind } from '../types/global';
 	import type { StoreFetcher } from '../types/stores';
+	import { goto } from '$app/navigation';
 
 	let load = [initFetchers(), wsConnect()];
 
@@ -27,7 +27,13 @@
 
 	function startup() {
 		const path = $page.url.pathname.split('/')[1];
-		return isServerKind(path) ? (path as ServerKind) : $serverKind;
+		if (isServerKind(path)) {
+			return path as ServerKind;
+		}
+		if (path !== 'about') {
+			endpoints = -1;
+		}
+		return $serverKind;
 	}
 
 	function understand(value: any | StoreFetcher | null) {
@@ -35,8 +41,20 @@
 			.filter((v) => value?.[v])
 			.filter((x) => x);
 
-		endpoints = endp.length;
-		return endp.length;
+		const length = endp.length;
+		if (length) {
+			const start = startup();
+			$serverKind = start !== $serverKind ? start : endp[0];
+
+			if (endpoints !== -1) {
+				goto($page.url.pathname.replace(start, $serverKind), {
+					replaceState: true,
+				});
+			}
+		}
+
+		endpoints = length;
+		return length;
 	}
 
 	NProgress.configure({
@@ -55,10 +73,6 @@
 			NProgress.done();
 		}
 	}
-
-	onMount(() => {
-		$serverKind = startup();
-	});
 </script>
 
 {#await Promise.all(load)}
@@ -66,6 +80,8 @@
 {:then ret}
 	{#if !understand(ret[0])}
 		<Error status={503} message={'No server available'} />
+	{:else if endpoints === -1}
+		<Error status={404} message={'Not found'} />
 	{:else}
 		<Nav endpoints={endpoints === 2} />
 		<slot />
