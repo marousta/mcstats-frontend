@@ -77,7 +77,7 @@
 		let datasets = [];
 		let labels: string[] = [];
 		if (history.length > 0) {
-			labels = history[0].data.map((n) => new getTime(n.date).full());
+			labels = history[0].data.map((n) => new getTime(n.date).lite());
 		}
 		let maxElements: number = getMaxElements(history);
 		for (const player of history) {
