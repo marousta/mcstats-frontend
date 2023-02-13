@@ -1,3 +1,5 @@
+import { PUBLIC_BLUEMAP_URL, PUBLIC_DYNMAP_URL } from '$env/static/public';
+
 import { ServerKind } from '../../types/global';
 
 export interface HamburgerItem {
@@ -14,7 +16,6 @@ export interface HamburgerItems {
 export const items: HamburgerItems = {
 	[ServerKind.Vanilla]: [
 		{ name: 'Home', href: `/${[ServerKind.Vanilla]}`, new_tab: false },
-		{ name: 'MultiMC', href: `/${[ServerKind.Vanilla]}/multimc`, new_tab: false },
 		{ name: 'Graphs', href: `/${[ServerKind.Vanilla]}/graphs`, new_tab: false },
 		{ name: 'Dynmap', href: `/map/`, new_tab: true },
 		{ name: 'Explore', href: `/3dmap/`, new_tab: true },

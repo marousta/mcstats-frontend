@@ -32,12 +32,6 @@
 				target="_blank">Sodium</a
 			> for maximum performance
 		</p>
-		<p>
-			You can get a preconfigured version with Sodium and Shaders <a
-				class="link alt"
-				href="/multimc">here</a
-			>
-		</p>
 	</div>
 	<PlayersOnline />
 </div>

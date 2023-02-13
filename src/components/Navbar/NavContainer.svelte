@@ -11,10 +11,14 @@
 
 	let hamburger_open: boolean = false;
 
-	let items: HamburgerItem[] = entries[$serverKind];
+	let items: HamburgerItem[] = sanitize(entries[$serverKind]);
 
 	$: {
-		items = entries[$serverKind];
+		items = sanitize(entries[$serverKind]);
+	}
+
+	function sanitize(entries: HamburgerItem[]) {
+		return entries.filter((entry) => entry.href);
 	}
 </script>
 
