@@ -25,6 +25,7 @@ export enum mcStatus {
 export interface ServerInfos {
 	version: string;
 	capacity: number;
+	motd: string;
 }
 
 export interface ServerUptimeData {
@@ -38,7 +39,7 @@ export interface PlayersCurrentlyOnline {
 }
 
 export interface HistoryPlayersData {
-	date: Date;
+	date: string;
 	value: number;
 }
 

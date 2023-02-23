@@ -44,7 +44,7 @@
 		const length = endp.length;
 		if (length) {
 			const start = startup();
-			$serverKind = start !== $serverKind ? start : endp[0];
+			$serverKind = isServerKind(start) ? start : endp[0];
 
 			if (endpoints !== -1) {
 				goto($page.url.pathname.replace(start, $serverKind), {

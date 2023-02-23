@@ -55,8 +55,8 @@ export const mcConnectionStatus: Writable<StoreMcConnectionStatus> = writable({
 	[ServerKind.Modded]: mcStatus.NotConnected,
 });
 export const mcInfos: Writable<StoreMcVersion> = writable({
-	[ServerKind.Vanilla]: { java: { version: 'Error', capacity: -1 }, bedrock: null },
-	[ServerKind.Modded]: { java: { version: 'Error', capacity: -1 }, bedrock: null },
+	[ServerKind.Vanilla]: { java: { version: 'Error', capacity: -1, motd: '' }, bedrock: null },
+	[ServerKind.Modded]: { java: { version: 'Error', capacity: -1, motd: '' }, bedrock: null },
 });
 
 export const serverKind: Writable<ServerKind> = writable(ServerKind.Vanilla);

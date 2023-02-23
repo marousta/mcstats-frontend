@@ -5,6 +5,12 @@
 
 	import { ServerKind } from '../../types/global';
 	import { mcInfos } from '../../stores/stores';
+
+	let modpack = $mcInfos[ServerKind.Modded].java.motd;
+
+	$: {
+		modpack = $mcInfos[ServerKind.Modded].java.motd;
+	}
 </script>
 
 <div
@@ -13,7 +19,7 @@
 	out:fly={{ x: 200, duration: 200 }}
 >
 	<div class="disclaimer">
-		Modpack <b>All the Mods 8</b> (1.0.8) on Minecraft
+		Modpack <b>{modpack}</b> on Minecraft
 		{#if $mcInfos[ServerKind.Modded].java}
 			<b>{$mcInfos[ServerKind.Modded].java.version}</b>
 		{/if}

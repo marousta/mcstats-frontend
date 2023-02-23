@@ -42,20 +42,24 @@
 	let history: ResponseHistoryPlayersLogtimes[] = $playersLogtimes[$serverKind];
 
 	// count max elements in data
-	function getMaxElements(players: ResponseHistoryPlayersLogtimes[]): number {
-		let maxElements: number = 0;
-		players.forEach((player) => {
+	function getMaxElements(players: ResponseHistoryPlayersLogtimes[]): [number, number] {
+		let max_elements: number = 0;
+		let found_index: number = 0;
+
+		for (const i in players) {
 			let elementsCount: number = 0;
-			player.data.forEach(() => {
+
+			for (const data of players[i].data) {
 				elementsCount++;
-			});
-
-			if (maxElements < elementsCount) {
-				maxElements = elementsCount;
 			}
-		});
 
-		return maxElements;
+			if (max_elements < elementsCount) {
+				max_elements = elementsCount;
+				found_index = +i;
+			}
+		}
+
+		return [max_elements, found_index];
 	}
 
 	// fill empty data with zeros
@@ -76,14 +80,21 @@
 	function genChart() {
 		let datasets = [];
 		let labels: string[] = [];
+
+		const [max_elements, found_index]: [number, number] = getMaxElements(history);
+
 		if (history.length > 0) {
-			labels = history[0].data.map((n) => new getTime(n.date).lite());
+			labels = history[found_index].data.map((n) => {
+				const s = n.date.split('T');
+				s[1] = '00:00:00.000Z';
+				return new getTime(s.join('T')).lite();
+			});
 		}
-		let maxElements: number = getMaxElements(history);
+
 		for (const player of history) {
 			datasets.push({
 				label: player.username,
-				data: [...fillData(player, maxElements), player.current],
+				data: [...fillData(player, max_elements), player.current],
 				borderColor: genColor(player.username),
 				borderWidth: 1,
 			});

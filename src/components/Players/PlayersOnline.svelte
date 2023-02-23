@@ -12,7 +12,9 @@
 </script>
 
 <div class="player-heads-container">
-	{#if $wsConnectonStatus == wsStatus.Connected}
+	{#if $mcConnectionStatus[$serverKind] == mcStatus.NotConnected}
+		<div class="server-closed status">Server is closed.</div>
+	{:else if $wsConnectonStatus == wsStatus.Connected}
 		<PlayerData />
 	{:else if $wsConnectonStatus == wsStatus.Connecting}
 		<div class="loading status">Loading...</div>
@@ -20,8 +22,6 @@
 		<div class="server-closed status">Unable to get data from server.</div>
 		<div class="status">Retrying...</div>
 		<div class="refreshButton" on:click={wsConnect} on:keydown={keydown}>Refresh</div>
-	{:else if $mcConnectionStatus[$serverKind] == mcStatus.NotConnected}
-		<div class="server-closed status">Server is closed.</div>
 	{/if}
 </div>
 
