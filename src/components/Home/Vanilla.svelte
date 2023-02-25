@@ -61,10 +61,4 @@
 		text-decoration: underline;
 		font-weight: bold;
 	}
-
-	@media screen and (max-width: 910px) {
-		.link.alt:hover::after {
-			display: none;
-		}
-	}
 </style>
